@@ -260,6 +260,10 @@ h2 {
   width: 100%;
 }
 
+.dark-button-preview {
+  background: #ff4f00;
+}
+
 .navbar-preview {
   align-self: stretch;
   background: #f4ede9;

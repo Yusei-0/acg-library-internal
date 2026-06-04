@@ -1,5 +1,32 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import { getLayoutStyles, type ComponentLayoutProps } from '../../shared/layout'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import acgLogoDark from '../../assets/acg-logo-dark.png'
+import acgLogoPrincipal from '../../assets/acg-logo-principal.png'
+import type { ComponentLayoutProps } from '../../shared/layout'
+import { GetInTouchButton } from '../GetInTouchButton/GetInTouchButton'
+import {
+  contactSlotStyle,
+  defaultCompactBackground,
+  defaultMenuBackground,
+  defaultMenuHoverColor,
+  defaultMenuTextColor,
+  defaultNavBackground,
+  defaultTextColor,
+  getCloseButtonStyle,
+  getCompactShellStyle,
+  getHeroLinkStyle,
+  getHeroShellStyle,
+  getMenuButtonStyle,
+  getOverlayHeaderStyle,
+  getOverlayStyle,
+  getRootStyle,
+  heroLinksStyle,
+  logoImageStyle,
+  logoLinkStyle,
+  menuIndexStyle,
+  menuItemStyle,
+  menuLabelStyle,
+  menuScrollerStyle,
+} from './ACGNavbar.styles'
 
 export interface NavbarLink {
   href: string
@@ -33,13 +60,6 @@ interface MenuItem {
   link?: NavbarLink
 }
 
-const defaultNavBackground = 'var(--acg-nav-background, #ff4f00)'
-const defaultCompactBackground = 'var(--acg-nav-compact-background, #f4ede9)'
-const defaultMenuBackground = 'var(--acg-nav-menu-background, var(--acg-nav-background, #ff4f00))'
-const defaultTextColor = 'var(--acg-nav-text, #0b0b0b)'
-const defaultMenuTextColor = 'var(--acg-nav-menu-text, #9d3400)'
-const defaultMenuHoverColor = 'var(--acg-nav-menu-hover, #0b0b0b)'
-
 export function ACGNavbar({
   compactBackground = defaultCompactBackground,
   contactLabel = 'GET IN TOUCH',
@@ -63,7 +83,7 @@ export function ACGNavbar({
 }: ACGNavbarProps) {
   const [isCompact, setIsCompact] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const scrollerRef = useRef<HTMLDivElement>(null)
+  const compactStateRef = useRef(false)
 
   const items = useMemo<MenuItem[]>(
     () => [
@@ -75,37 +95,22 @@ export function ACGNavbar({
     [firstLabel, firstLink, fourthLabel, fourthLink, secondLabel, secondLink, thirdLabel, thirdLink],
   )
 
-  const repeatedItems = useMemo(
-    () =>
-      Array.from({ length: 8 }, (_, groupIndex) =>
-        items.map((item, itemIndex) => ({ ...item, key: `${groupIndex}-${itemIndex}` })),
-      ).flat(),
-    [items],
-  )
-
   useEffect(() => {
-    const updateState = () => setIsCompact(window.scrollY > scrollThreshold)
+    const updateState = () => {
+      const shouldCompact = compactStateRef.current
+        ? window.scrollY > Math.max(0, scrollThreshold - 8)
+        : window.scrollY > scrollThreshold + 8
+
+      if (shouldCompact !== compactStateRef.current) {
+        compactStateRef.current = shouldCompact
+        setIsCompact(shouldCompact)
+      }
+    }
+
     updateState()
     window.addEventListener('scroll', updateState, { passive: true })
     return () => window.removeEventListener('scroll', updateState)
   }, [scrollThreshold])
-
-  useEffect(() => {
-    if (!isMenuOpen || !scrollerRef.current) return
-    const scroller = scrollerRef.current
-    scroller.scrollTop = scroller.scrollHeight / 3
-
-    const handleScroll = () => {
-      const lowLimit = scroller.scrollHeight * 0.18
-      const highLimit = scroller.scrollHeight * 0.64
-
-      if (scroller.scrollTop < lowLimit) scroller.scrollTop += scroller.scrollHeight / 3
-      if (scroller.scrollTop > highLimit) scroller.scrollTop -= scroller.scrollHeight / 3
-    }
-
-    scroller.addEventListener('scroll', handleScroll, { passive: true })
-    return () => scroller.removeEventListener('scroll', handleScroll)
-  }, [isMenuOpen])
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : ''
@@ -115,14 +120,7 @@ export function ACGNavbar({
   }, [isMenuOpen])
 
   const showCompact = isCompact || isMenuOpen
-  const rootStyle: CSSProperties = {
-    display: 'flex',
-    position: 'sticky',
-    top: 0,
-    width: '100%',
-    zIndex: 30,
-    ...getLayoutStyles(layoutProps),
-  }
+  const rootStyle = getRootStyle(layoutProps)
 
   return (
     <>
@@ -140,11 +138,11 @@ export function ACGNavbar({
             </nav>
           )}
 
-          <a href="#top" style={showCompact ? getCompactLogoStyle(navBackground) : getHeroLogoStyle(textColor)}>
-            {logoText}
-          </a>
+          <LogoLink isOverlay={false} logoText={logoText} showCompact={showCompact} />
 
-          <PillLink label={contactLabel} link={contactLink} textColor={textColor} />
+          <div style={contactSlotStyle}>
+            <GetInTouchButton label={contactLabel} link={contactLink} tone="Olive" />
+          </div>
         </header>
       </div>
 
@@ -154,17 +152,17 @@ export function ACGNavbar({
             <button style={getCloseButtonStyle()} onClick={() => setIsMenuOpen(false)} type="button">
               CLOSE
             </button>
-            <a href="#top" style={overlayLogoStyle}>
-              {logoText}
-            </a>
-            <PillLink label={contactLabel} link={contactLink} textColor={textColor} />
+            <LogoLink isOverlay logoText={logoText} showCompact />
+            <div style={contactSlotStyle}>
+              <GetInTouchButton label={contactLabel} link={contactLink} tone="Olive" />
+            </div>
           </header>
-          <div ref={scrollerRef} style={menuScrollerStyle}>
-            {repeatedItems.map((item, index) => (
+          <div style={menuScrollerStyle}>
+            {items.map((item, index) => (
               <MenuScrollerItem
                 index={index}
                 item={item}
-                key={item.key}
+                key={item.label}
                 menuHoverColor={menuHoverColor}
                 menuTextColor={menuTextColor}
                 onClick={() => setIsMenuOpen(false)}
@@ -191,15 +189,20 @@ function MenuAnchor({ item, textColor }: { item: MenuItem; textColor: string }) 
   )
 }
 
-function PillLink({ label, link, textColor }: { label: string; link?: NavbarLink; textColor: string }) {
+function LogoLink({
+  isOverlay,
+  logoText,
+  showCompact,
+}: {
+  isOverlay: boolean
+  logoText: string
+  showCompact: boolean
+}) {
+  const logoSrc = isOverlay ? acgLogoDark : showCompact ? acgLogoPrincipal : acgLogoDark
+
   return (
-    <a
-      href={link?.href}
-      rel={link?.target === '_blank' ? 'noreferrer' : undefined}
-      style={getPillStyle(textColor)}
-      target={link?.target}
-    >
-      {label}
+    <a aria-label={logoText} href="#top" style={logoLinkStyle}>
+      <img alt="" src={logoSrc} style={logoImageStyle} />
     </a>
   )
 }
@@ -236,172 +239,4 @@ function MenuScrollerItem({
       <span style={menuLabelStyle}>{item.label}</span>
     </a>
   )
-}
-
-function getHeroShellStyle(background: string): CSSProperties {
-  return {
-    alignItems: 'flex-start',
-    background,
-    boxSizing: 'border-box',
-    display: 'grid',
-    gridTemplateColumns: '1fr auto 1fr',
-    minHeight: 116,
-    padding: '22px 22px',
-    width: '100%',
-  }
-}
-
-function getCompactShellStyle(background: string): CSSProperties {
-  return {
-    alignItems: 'center',
-    background,
-    boxSizing: 'border-box',
-    display: 'grid',
-    gridTemplateColumns: '1fr auto 1fr',
-    minHeight: 78,
-    padding: '18px 24px',
-    width: '100%',
-  }
-}
-
-const heroLinksStyle: CSSProperties = {
-  alignItems: 'flex-start',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 0,
-  justifySelf: 'start',
-  lineHeight: 1.05,
-}
-
-function getHeroLinkStyle(color: string): CSSProperties {
-  return {
-    color,
-    fontSize: 12,
-    fontWeight: 900,
-    lineHeight: 1.1,
-    textDecoration: 'none',
-  }
-}
-
-function getMenuButtonStyle(color: string): CSSProperties {
-  return {
-    background: 'transparent',
-    border: 0,
-    color,
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-    fontSize: 12,
-    fontWeight: 900,
-    justifySelf: 'start',
-    padding: 0,
-    textDecoration: 'underline',
-    textUnderlineOffset: 3,
-  }
-}
-
-function getCloseButtonStyle(): CSSProperties {
-  return {
-    ...getMenuButtonStyle('#ffffff'),
-  }
-}
-
-function getHeroLogoStyle(color: string): CSSProperties {
-  return {
-    alignSelf: 'center',
-    color,
-    fontSize: 13,
-    fontWeight: 900,
-    justifySelf: 'center',
-    textDecoration: 'none',
-  }
-}
-
-function getCompactLogoStyle(background: string): CSSProperties {
-  return {
-    ...getHeroLogoStyle(defaultTextColor),
-    background,
-    color: '#ffffff',
-    padding: '6px 10px',
-  }
-}
-
-const overlayLogoStyle: CSSProperties = {
-  ...getCompactLogoStyle(defaultTextColor),
-  background: defaultTextColor,
-}
-
-function getPillStyle(color: string): CSSProperties {
-  return {
-    alignItems: 'center',
-    border: `2px solid ${color}`,
-    borderRadius: 999,
-    color,
-    display: 'inline-flex',
-    fontSize: 12,
-    fontWeight: 900,
-    justifyContent: 'center',
-    justifySelf: 'end',
-    lineHeight: 1,
-    padding: '8px 13px',
-    textDecoration: 'none',
-    whiteSpace: 'nowrap',
-  }
-}
-
-function getOverlayStyle(background: string): CSSProperties {
-  return {
-    background,
-    bottom: 0,
-    left: 0,
-    overflow: 'hidden',
-    position: 'fixed',
-    right: 0,
-    top: 0,
-    zIndex: 80,
-  }
-}
-
-function getOverlayHeaderStyle(background: string): CSSProperties {
-  return {
-    ...getCompactShellStyle(background),
-    position: 'sticky',
-    top: 0,
-    zIndex: 2,
-  }
-}
-
-const menuScrollerStyle: CSSProperties = {
-  height: 'calc(100svh - 84px)',
-  overflowY: 'auto',
-  padding: '0 52px 80px',
-  scrollbarWidth: 'none',
-}
-
-const menuItemStyle: CSSProperties = {
-  alignItems: 'center',
-  display: 'grid',
-  gap: 24,
-  gridTemplateColumns: '150px 1fr',
-  minHeight: 122,
-  textDecoration: 'none',
-  transition: 'color 140ms ease',
-}
-
-const menuIndexStyle: CSSProperties = {
-  border: `2px solid ${defaultMenuTextColor}`,
-  borderRadius: '50%',
-  display: 'inline-flex',
-  fontSize: 42,
-  fontWeight: 900,
-  height: 72,
-  justifyContent: 'center',
-  lineHeight: 1,
-  width: 72,
-}
-
-const menuLabelStyle: CSSProperties = {
-  fontSize: 'clamp(52px, 8vw, 104px)',
-  fontWeight: 900,
-  lineHeight: 0.95,
-  textAlign: 'center',
 }

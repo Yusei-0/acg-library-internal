@@ -1,22 +1,24 @@
 import { StrictMode, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ACGNavbar, ActionButton, MetricCard } from '../components'
+import { ACGNavbar, ActionButton, GetInTouchButton, MetricCard } from '../components'
 import type {
   ActionButtonSize,
   ActionButtonVariant,
+  GetInTouchButtonTone,
   MetricCardAlignment,
   MetricCardTone,
 } from '../components'
 import '../../devlink/css/global.css'
 import './styles.css'
 
-type ComponentKey = 'navbar' | 'button' | 'metric'
+type ComponentKey = 'navbar' | 'button' | 'getInTouch' | 'metric'
 type CanvasMode = 'Contained' | 'Full width'
 
 const componentTabs: Array<{ key: ComponentKey; label: string }> = [
   { key: 'navbar', label: 'ACG Navbar' },
   { key: 'button', label: 'Action Button' },
+  { key: 'getInTouch', label: 'Get In Touch' },
   { key: 'metric', label: 'Metric Card' },
 ]
 
@@ -25,6 +27,7 @@ function PreviewApp() {
   const [buttonVariant, setButtonVariant] = useState<ActionButtonVariant>('Primary')
   const [buttonSize, setButtonSize] = useState<ActionButtonSize>('Medium')
   const [canvasMode, setCanvasMode] = useState<CanvasMode>('Contained')
+  const [getInTouchTone, setGetInTouchTone] = useState<GetInTouchButtonTone>('Olive')
   const [metricTone, setMetricTone] = useState<MetricCardTone>('Light')
   const [metricAlignment, setMetricAlignment] = useState<MetricCardAlignment>('Left')
   const isFullWidth = canvasMode === 'Full width'
@@ -76,6 +79,7 @@ function PreviewApp() {
             buttonVariant,
             buttonSize,
             canvasMode,
+            getInTouchTone,
             metricTone,
             metricAlignment,
           })}
@@ -107,6 +111,16 @@ function PreviewApp() {
                 />
               </ControlGroup>
             </>
+          ) : null}
+
+          {activeComponent === 'getInTouch' ? (
+            <ControlGroup label="Tone">
+              <SegmentedControl
+                options={['Olive', 'Orange', 'Light']}
+                value={getInTouchTone}
+                onChange={(value) => setGetInTouchTone(value as GetInTouchButtonTone)}
+              />
+            </ControlGroup>
           ) : null}
 
           {activeComponent === 'metric' ? (
@@ -143,6 +157,7 @@ function renderPreview(
     buttonSize: ActionButtonSize
     buttonVariant: ActionButtonVariant
     canvasMode: CanvasMode
+    getInTouchTone: GetInTouchButtonTone
     metricAlignment: MetricCardAlignment
     metricTone: MetricCardTone
   },
@@ -171,6 +186,14 @@ function renderPreview(
         tone={options.metricTone}
         value="98"
       />
+    )
+  }
+
+  if (activeComponent === 'getInTouch') {
+    return (
+      <div className={options.getInTouchTone === 'Light' ? 'button-preview dark-button-preview' : 'button-preview'}>
+        <GetInTouchButton label="GET IN TOUCH" link={{ href: '#contact' }} tone={options.getInTouchTone} />
+      </div>
     )
   }
 

@@ -6,6 +6,7 @@
     "components": [
       "./src/components/ACGNavbar/ACGNavbar.webflow.tsx",
       "./src/components/ActionButton/ActionButton.webflow.tsx",
+      "./src/components/GetInTouchButton/GetInTouchButton.webflow.tsx",
       "./src/components/MetricCard/MetricCard.webflow.tsx"
     ],
     "globals": "./src/global.webflow.ts"

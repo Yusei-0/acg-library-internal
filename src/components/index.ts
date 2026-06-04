@@ -5,6 +5,12 @@ export type {
   ActionButtonSize,
   ActionButtonVariant,
 } from './ActionButton/ActionButton'
+export { GetInTouchButton } from './GetInTouchButton/GetInTouchButton'
+export type {
+  GetInTouchButtonLink,
+  GetInTouchButtonProps,
+  GetInTouchButtonTone,
+} from './GetInTouchButton/GetInTouchButton'
 export { MetricCard } from './MetricCard/MetricCard'
 export type {
   MetricCardAlignment,
