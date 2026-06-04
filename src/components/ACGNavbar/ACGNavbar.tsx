@@ -117,7 +117,10 @@ export function ACGNavbar({
   const showCompact = isCompact || isMenuOpen
   const rootStyle: CSSProperties = {
     display: 'flex',
+    position: 'sticky',
+    top: 0,
     width: '100%',
+    zIndex: 30,
     ...getLayoutStyles(layoutProps),
   }
 
@@ -244,10 +247,7 @@ function getHeroShellStyle(background: string): CSSProperties {
     gridTemplateColumns: '1fr auto 1fr',
     minHeight: 116,
     padding: '22px 22px',
-    position: 'sticky',
-    top: 0,
     width: '100%',
-    zIndex: 30,
   }
 }
 
@@ -260,10 +260,7 @@ function getCompactShellStyle(background: string): CSSProperties {
     gridTemplateColumns: '1fr auto 1fr',
     minHeight: 78,
     padding: '18px 24px',
-    position: 'sticky',
-    top: 0,
     width: '100%',
-    zIndex: 30,
   }
 }
 
