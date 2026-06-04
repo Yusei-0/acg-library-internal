@@ -1,0 +1,39 @@
+{
+  "siteId": "6a034d161254a8d8ce2fc48a",
+  "library": {
+    "id": "webflow-studio-library",
+    "name": "Webflow Studio Library",
+    "components": [
+      "./src/components/ACGNavbar/ACGNavbar.webflow.tsx",
+      "./src/components/ActionButton/ActionButton.webflow.tsx",
+      "./src/components/MetricCard/MetricCard.webflow.tsx"
+    ],
+    "globals": "./src/global.webflow.ts"
+  },
+  "devlink": {
+    "rootDir": "./devlink",
+    "cssModules": true,
+    "overwriteModule": true,
+    "skipTagSelectors": false,
+    "relativeHrefRoot": false,
+    "fileExtensions": {
+      "js": "tsx",
+      "css": "css"
+    }
+  },
+  "devlink-export": {
+    "rootDir": "./devlink",
+    "components": ".*",
+    "componentGroups": ".*",
+    "ts": true,
+    "cssScopes": true,
+    "treeShake": true,
+    "relativeHrefRoot": false
+  },
+  "telemetry": {
+    "global": {
+      "allowTelemetry": false,
+      "version": "2.0.0"
+    }
+  }
+}
