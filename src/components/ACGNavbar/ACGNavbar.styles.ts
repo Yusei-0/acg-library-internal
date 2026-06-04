@@ -55,6 +55,8 @@ export const heroLinksStyle: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: 0,
+  height: 68,
+  justifyContent: 'space-between',
   justifySelf: 'start',
   lineHeight: 1.05,
 }
@@ -62,7 +64,7 @@ export const heroLinksStyle: CSSProperties = {
 export function getHeroLinkStyle(color: string): CSSProperties {
   return {
     color,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 800,
     letterSpacing: '-0.06em',
     lineHeight: '100%',
@@ -79,11 +81,10 @@ export function getMenuButtonStyle(color: string): CSSProperties {
     color,
     cursor: 'pointer',
     fontFamily: 'inherit',
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 900,
     justifySelf: 'start',
     padding: 0,
-    textDecoration: 'underline',
     textUnderlineOffset: 3,
   }
 }

@@ -22,6 +22,16 @@ export default declareComponent(ACGNavbar, {
       name: 'Contact Link',
       group: 'Contact',
     }),
+    menuLabel: props.Text({
+      name: 'Menu Label',
+      defaultValue: 'MENU',
+      group: 'Controls',
+    }),
+    closeLabel: props.Text({
+      name: 'Close Label',
+      defaultValue: 'CLOSE',
+      group: 'Controls',
+    }),
     firstLabel: props.Text({
       name: 'First Label',
       defaultValue: 'WHAT WE DO',
@@ -56,6 +66,46 @@ export default declareComponent(ACGNavbar, {
     }),
     fourthLink: props.Link({
       name: 'Fourth Link',
+      group: 'Links',
+    }),
+    fifthLabel: props.Text({
+      name: 'Fifth Label',
+      defaultValue: '',
+      group: 'Links',
+      tooltip: 'Optional. Leave empty to hide this link.',
+    }),
+    fifthLink: props.Link({
+      name: 'Fifth Link',
+      group: 'Links',
+    }),
+    sixthLabel: props.Text({
+      name: 'Sixth Label',
+      defaultValue: '',
+      group: 'Links',
+      tooltip: 'Optional. Leave empty to hide this link.',
+    }),
+    sixthLink: props.Link({
+      name: 'Sixth Link',
+      group: 'Links',
+    }),
+    seventhLabel: props.Text({
+      name: 'Seventh Label',
+      defaultValue: '',
+      group: 'Links',
+      tooltip: 'Optional. Leave empty to hide this link.',
+    }),
+    seventhLink: props.Link({
+      name: 'Seventh Link',
+      group: 'Links',
+    }),
+    eighthLabel: props.Text({
+      name: 'Eighth Label',
+      defaultValue: '',
+      group: 'Links',
+      tooltip: 'Optional. Leave empty to hide this link.',
+    }),
+    eighthLink: props.Link({
+      name: 'Eighth Link',
       group: 'Links',
     }),
     scrollThreshold: props.Number({

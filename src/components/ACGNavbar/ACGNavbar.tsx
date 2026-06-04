@@ -38,6 +38,8 @@ export interface ACGNavbarProps extends ComponentLayoutProps {
   logoText?: string
   contactLabel?: string
   contactLink?: NavbarLink
+  menuLabel?: string
+  closeLabel?: string
   firstLabel?: string
   firstLink?: NavbarLink
   secondLabel?: string
@@ -46,6 +48,14 @@ export interface ACGNavbarProps extends ComponentLayoutProps {
   thirdLink?: NavbarLink
   fourthLabel?: string
   fourthLink?: NavbarLink
+  fifthLabel?: string
+  fifthLink?: NavbarLink
+  sixthLabel?: string
+  sixthLink?: NavbarLink
+  seventhLabel?: string
+  seventhLink?: NavbarLink
+  eighthLabel?: string
+  eighthLink?: NavbarLink
   scrollThreshold?: number
   navBackground?: string
   compactBackground?: string
@@ -62,13 +72,19 @@ interface MenuItem {
 
 export function ACGNavbar({
   compactBackground = defaultCompactBackground,
+  closeLabel = 'CLOSE',
   contactLabel = 'GET IN TOUCH',
   contactLink = { href: '#contact' },
+  eighthLabel = '',
+  eighthLink,
+  fifthLabel = '',
+  fifthLink,
   firstLabel = 'WHAT WE DO',
   firstLink = { href: '#what-we-do' },
   fourthLabel = 'ABOUT',
   fourthLink = { href: '#about' },
   logoText = 'Logo',
+  menuLabel = 'MENU',
   menuBackground = defaultMenuBackground,
   menuHoverColor = defaultMenuHoverColor,
   menuTextColor = defaultMenuTextColor,
@@ -79,20 +95,58 @@ export function ACGNavbar({
   textColor = defaultTextColor,
   thirdLabel = 'WORK',
   thirdLink = { href: '#work' },
+  seventhLabel = '',
+  seventhLink,
+  sixthLabel = '',
+  sixthLink,
   ...layoutProps
 }: ACGNavbarProps) {
   const [isCompact, setIsCompact] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const scrollerRef = useRef<HTMLDivElement>(null)
   const compactStateRef = useRef(false)
 
   const items = useMemo<MenuItem[]>(
     () => [
-      { label: firstLabel, link: firstLink },
-      { label: secondLabel, link: secondLink },
-      { label: thirdLabel, link: thirdLink },
-      { label: fourthLabel, link: fourthLink },
+      createMenuItem(firstLabel, firstLink),
+      createMenuItem(secondLabel, secondLink),
+      createMenuItem(thirdLabel, thirdLink),
+      createMenuItem(fourthLabel, fourthLink),
+      createMenuItem(fifthLabel, fifthLink),
+      createMenuItem(sixthLabel, sixthLink),
+      createMenuItem(seventhLabel, seventhLink),
+      createMenuItem(eighthLabel, eighthLink),
+    ].filter((item) => item.label.trim().length > 0),
+    [
+      eighthLabel,
+      eighthLink,
+      fifthLabel,
+      fifthLink,
+      firstLabel,
+      firstLink,
+      fourthLabel,
+      fourthLink,
+      secondLabel,
+      secondLink,
+      seventhLabel,
+      seventhLink,
+      sixthLabel,
+      sixthLink,
+      thirdLabel,
+      thirdLink,
     ],
-    [firstLabel, firstLink, fourthLabel, fourthLink, secondLabel, secondLink, thirdLabel, thirdLink],
+  )
+
+  const repeatedItems = useMemo(
+    () =>
+      Array.from({ length: 5 }, (_, groupIndex) =>
+        items.map((item, itemIndex) => ({
+          ...item,
+          key: `${groupIndex}-${itemIndex}`,
+          visibleIndex: itemIndex,
+        })),
+      ).flat(),
+    [items],
   )
 
   useEffect(() => {
@@ -119,6 +173,35 @@ export function ACGNavbar({
     }
   }, [isMenuOpen])
 
+  useEffect(() => {
+    if (!isMenuOpen || !scrollerRef.current) return
+
+    const scroller = scrollerRef.current
+    const repeatCount = 5
+
+    const setMiddleBlock = () => {
+      const blockHeight = scroller.scrollHeight / repeatCount
+      scroller.scrollTop = blockHeight * 2
+    }
+
+    const animationFrame = window.requestAnimationFrame(setMiddleBlock)
+
+    const handleScroll = () => {
+      const blockHeight = scroller.scrollHeight / repeatCount
+      const lowLimit = blockHeight
+      const highLimit = blockHeight * 3
+
+      if (scroller.scrollTop < lowLimit) scroller.scrollTop += blockHeight * 2
+      if (scroller.scrollTop > highLimit) scroller.scrollTop -= blockHeight * 2
+    }
+
+    scroller.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.cancelAnimationFrame(animationFrame)
+      scroller.removeEventListener('scroll', handleScroll)
+    }
+  }, [isMenuOpen])
+
   const showCompact = isCompact || isMenuOpen
   const rootStyle = getRootStyle(layoutProps)
 
@@ -128,7 +211,7 @@ export function ACGNavbar({
         <header style={showCompact ? getCompactShellStyle(compactBackground) : getHeroShellStyle(navBackground)}>
           {showCompact ? (
             <button style={getMenuButtonStyle(textColor)} onClick={() => setIsMenuOpen(true)} type="button">
-              MENU
+              {menuLabel}
             </button>
           ) : (
             <nav aria-label="Main navigation" style={heroLinksStyle}>
@@ -150,19 +233,19 @@ export function ACGNavbar({
         <div style={getOverlayStyle(menuBackground)}>
           <header style={getOverlayHeaderStyle(menuBackground)}>
             <button style={getCloseButtonStyle()} onClick={() => setIsMenuOpen(false)} type="button">
-              CLOSE
+              {closeLabel}
             </button>
             <LogoLink isOverlay logoText={logoText} showCompact />
             <div style={contactSlotStyle}>
               <GetInTouchButton label={contactLabel} link={contactLink} tone="Olive" />
             </div>
           </header>
-          <div style={menuScrollerStyle}>
-            {items.map((item, index) => (
+          <div ref={scrollerRef} style={menuScrollerStyle}>
+            {repeatedItems.map((item) => (
               <MenuScrollerItem
-                index={index}
+                index={item.visibleIndex}
                 item={item}
-                key={item.label}
+                key={item.key}
                 menuHoverColor={menuHoverColor}
                 menuTextColor={menuTextColor}
                 onClick={() => setIsMenuOpen(false)}
@@ -174,6 +257,10 @@ export function ACGNavbar({
       ) : null}
     </>
   )
+}
+
+function createMenuItem(label: string, link?: NavbarLink): MenuItem {
+  return link ? { label, link } : { label }
 }
 
 function MenuAnchor({ item, textColor }: { item: MenuItem; textColor: string }) {
