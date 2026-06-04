@@ -50,7 +50,10 @@
     "upload": "pnpm run typecheck && webflow devlink import --skip-update-check",
     "upload:ci": "pnpm run typecheck && webflow devlink import --no-input --skip-update-check",
     "upload:dev": "webflow devlink import --dev --skip-update-check",
-    "webflow": "webflow --skip-update-check"
+    "webflow": "webflow --skip-update-check",
+    "webflow:bundle": "webflow library bundle",
+    "webflow:share": "webflow library share",
+    "bad": "webflow library bundle && webflow library share"
   },
   "keywords": [],
   "author": "",
