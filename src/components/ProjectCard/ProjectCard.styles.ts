@@ -6,10 +6,13 @@ export function getRootStyle(layoutProps: ComponentLayoutProps): CSSProperties {
   return {
     color: colorVars.nocturnalForest,
     display: 'block',
-    maxWidth: '100%',
     textDecoration: 'none',
     ...getLayoutStyles(layoutProps),
   }
+}
+
+function normalizeSize(value: string, fallback: string) {
+  return value.trim() || fallback
 }
 
 export const mediaWrapStyle: CSSProperties = {
@@ -74,32 +77,55 @@ export const categoryStyle: CSSProperties = {
 
 export function getResponsiveStyles({
   desktopImageHeight,
+  desktopMaxWidth,
   desktopMetaGap,
+  desktopMinWidth,
   desktopWidth,
   instanceId,
   mobileImageHeight,
+  mobileMaxWidth,
   mobileMetaGap,
+  mobileMinWidth,
   mobileWidth,
   tabletImageHeight,
+  tabletMaxWidth,
   tabletMetaGap,
+  tabletMinWidth,
   tabletWidth,
 }: {
   desktopImageHeight: number
+  desktopMaxWidth: string
   desktopMetaGap: number
-  desktopWidth: number
+  desktopMinWidth: string
+  desktopWidth: string
   instanceId: string
   mobileImageHeight: number
+  mobileMaxWidth: string
   mobileMetaGap: number
-  mobileWidth: number
+  mobileMinWidth: string
+  mobileWidth: string
   tabletImageHeight: number
+  tabletMaxWidth: string
   tabletMetaGap: number
-  tabletWidth: number
+  tabletMinWidth: string
+  tabletWidth: string
 }) {
   const selector = `[data-acg-project-card="${instanceId}"]`
+  const resolvedDesktopWidth = normalizeSize(desktopWidth, '100%')
+  const resolvedDesktopMinWidth = normalizeSize(desktopMinWidth, '0')
+  const resolvedDesktopMaxWidth = normalizeSize(desktopMaxWidth, 'none')
+  const resolvedTabletWidth = normalizeSize(tabletWidth, resolvedDesktopWidth)
+  const resolvedTabletMinWidth = normalizeSize(tabletMinWidth, resolvedDesktopMinWidth)
+  const resolvedTabletMaxWidth = normalizeSize(tabletMaxWidth, resolvedDesktopMaxWidth)
+  const resolvedMobileWidth = normalizeSize(mobileWidth, resolvedTabletWidth)
+  const resolvedMobileMinWidth = normalizeSize(mobileMinWidth, resolvedTabletMinWidth)
+  const resolvedMobileMaxWidth = normalizeSize(mobileMaxWidth, resolvedTabletMaxWidth)
 
   return `
 ${selector} {
-  width: ${Math.max(160, desktopWidth)}px;
+  max-width: ${resolvedDesktopMaxWidth};
+  min-width: ${resolvedDesktopMinWidth};
+  width: ${resolvedDesktopWidth};
 }
 
 ${selector} .acg-project-card__media {
@@ -112,7 +138,9 @@ ${selector} .acg-project-card__meta {
 
 @media (max-width: 991px) {
   ${selector} {
-    width: ${Math.max(160, tabletWidth)}px;
+    max-width: ${resolvedTabletMaxWidth};
+    min-width: ${resolvedTabletMinWidth};
+    width: ${resolvedTabletWidth};
   }
 
   ${selector} .acg-project-card__media {
@@ -126,7 +154,9 @@ ${selector} .acg-project-card__meta {
 
 @media (max-width: 767px) {
   ${selector} {
-    width: ${Math.max(160, mobileWidth)}px;
+    max-width: ${resolvedMobileMaxWidth};
+    min-width: ${resolvedMobileMinWidth};
+    width: ${resolvedMobileWidth};
   }
 
   ${selector} .acg-project-card__media {

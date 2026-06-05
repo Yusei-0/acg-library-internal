@@ -1,5 +1,7 @@
 export { ArrowButton } from './ArrowButton/ArrowButton'
 export type { ArrowButtonLink, ArrowButtonProps } from './ArrowButton/ArrowButton'
+export { ACGFooter } from './ACGFooter/ACGFooter'
+export type { ACGFooterProps, FooterLink } from './ACGFooter/ACGFooter'
 export { GetInTouchButton } from './GetInTouchButton/GetInTouchButton'
 export type {
   GetInTouchButtonLink,

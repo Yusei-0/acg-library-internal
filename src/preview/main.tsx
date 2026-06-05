@@ -1,7 +1,7 @@
 import { StrictMode, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ACGNavbar, ArrowButton, GetInTouchButton, MarqueeTitle, ProjectCard } from '../components'
+import { ACGFooter, ACGNavbar, ArrowButton, GetInTouchButton, MarqueeTitle, ProjectCard } from '../components'
 import type {
   GetInTouchButtonTone,
   MarqueeTitleDirection,
@@ -9,11 +9,12 @@ import type {
 import '../../devlink/css/global.css'
 import './styles.css'
 
-type ComponentKey = 'navbar' | 'arrowButton' | 'getInTouch' | 'marqueeTitle' | 'projectCard'
+type ComponentKey = 'navbar' | 'footer' | 'arrowButton' | 'getInTouch' | 'marqueeTitle' | 'projectCard'
 type CanvasMode = 'Contained' | 'Full width'
 
 const componentTabs: Array<{ key: ComponentKey; label: string }> = [
   { key: 'navbar', label: 'ACG Navbar' },
+  { key: 'footer', label: 'ACG Footer' },
   { key: 'arrowButton', label: 'Arrow Button' },
   { key: 'getInTouch', label: 'Get In Touch' },
   { key: 'marqueeTitle', label: 'Marquee Title' },
@@ -217,21 +218,31 @@ function renderPreview(
           clientName="Client Name"
           imageHeight={520}
           link={{ href: '#project' }}
+          maxWidth="520px"
           projectTitle="Project Title"
           tabletImageHeight={360}
-          tabletWidth={360}
-          width={520}
+          tabletWidth="360px"
+          width="100%"
         />
         <ProjectCard
           category="(Editorial)"
           clientName="Client Name"
           imageHeight={520}
           link={{ href: '#project-alt' }}
+          maxWidth="520px"
           projectTitle="Project Title"
           tabletImageHeight={360}
-          tabletWidth={360}
-          width={520}
+          tabletWidth="360px"
+          width="100%"
         />
+      </div>
+    )
+  }
+
+  if (activeComponent === 'footer') {
+    return (
+      <div className="footer-preview">
+        <ACGFooter />
       </div>
     )
   }

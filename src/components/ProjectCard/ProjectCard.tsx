@@ -31,9 +31,15 @@ export interface ProjectCardProps extends ComponentLayoutProps {
   hoverImage?: ProjectCardImage
   link?: ProjectCardLink
   className?: string
-  width?: number
-  tabletWidth?: number
-  mobileWidth?: number
+  width?: string
+  tabletWidth?: string
+  mobileWidth?: string
+  minWidth?: string
+  tabletMinWidth?: string
+  mobileMinWidth?: string
+  maxWidth?: string
+  tabletMaxWidth?: string
+  mobileMaxWidth?: string
   imageHeight?: number
   tabletImageHeight?: number
   mobileImageHeight?: number
@@ -50,15 +56,21 @@ export function ProjectCard({
   image,
   imageHeight = 520,
   link,
+  maxWidth = 'none',
   metaGap = 10,
   mobileImageHeight,
+  mobileMaxWidth,
   mobileMetaGap,
+  mobileMinWidth,
   mobileWidth,
+  minWidth = '0',
   projectTitle = 'Project Title',
   tabletImageHeight,
+  tabletMaxWidth,
   tabletMetaGap,
+  tabletMinWidth,
   tabletWidth,
-  width = 520,
+  width = '100%',
   ...layoutProps
 }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false)
@@ -66,14 +78,20 @@ export function ProjectCard({
   const rootStyle = getRootStyle(layoutProps)
   const responsiveStyles = getResponsiveStyles({
     desktopImageHeight: imageHeight,
+    desktopMaxWidth: maxWidth,
     desktopMetaGap: metaGap,
+    desktopMinWidth: minWidth,
     desktopWidth: width,
     instanceId,
     mobileImageHeight: mobileImageHeight ?? tabletImageHeight ?? imageHeight,
+    mobileMaxWidth: mobileMaxWidth || tabletMaxWidth || maxWidth,
     mobileMetaGap: mobileMetaGap ?? tabletMetaGap ?? metaGap,
+    mobileMinWidth: mobileMinWidth || tabletMinWidth || minWidth,
     mobileWidth: mobileWidth ?? tabletWidth ?? width,
     tabletImageHeight: tabletImageHeight ?? imageHeight,
+    tabletMaxWidth: tabletMaxWidth || maxWidth,
     tabletMetaGap: tabletMetaGap ?? metaGap,
+    tabletMinWidth: tabletMinWidth || minWidth,
     tabletWidth: tabletWidth ?? width,
   })
   const rootClassName = ['acg-project-card', className].filter(Boolean).join(' ')

@@ -304,6 +304,11 @@ h2 {
   width: 100%;
 }
 
+.footer-preview {
+  align-self: stretch;
+  width: 100%;
+}
+
 .navbar-preview {
   align-self: stretch;
   background: var(--acg-color-petal-mist);

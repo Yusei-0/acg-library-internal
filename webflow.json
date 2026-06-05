@@ -5,6 +5,7 @@
     "name": "ACG Components Internal",
     "components": [
       "./src/components/ACGNavbar/ACGNavbar.webflow.tsx",
+      "./src/components/ACGFooter/ACGFooter.webflow.tsx",
       "./src/components/ArrowButton/ArrowButton.webflow.tsx",
       "./src/components/GetInTouchButton/GetInTouchButton.webflow.tsx",
       "./src/components/MarqueeTitle/MarqueeTitle.webflow.tsx",
