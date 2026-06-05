@@ -5,11 +5,10 @@
     "name": "ACG Components Internal",
     "components": [
       "./src/components/ACGNavbar/ACGNavbar.webflow.tsx",
-      "./src/components/ActionButton/ActionButton.webflow.tsx",
+      "./src/components/ArrowButton/ArrowButton.webflow.tsx",
       "./src/components/GetInTouchButton/GetInTouchButton.webflow.tsx",
       "./src/components/MarqueeTitle/MarqueeTitle.webflow.tsx",
-      "./src/components/ProjectCard/ProjectCard.webflow.tsx",
-      "./src/components/MetricCard/MetricCard.webflow.tsx"
+      "./src/components/ProjectCard/ProjectCard.webflow.tsx"
     ],
     "globals": "./src/global.webflow.ts"
   },

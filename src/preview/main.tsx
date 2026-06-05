@@ -1,34 +1,29 @@
 import { StrictMode, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ACGNavbar, ActionButton, GetInTouchButton, MarqueeTitle, MetricCard, ProjectCard } from '../components'
+import { ACGNavbar, ArrowButton, GetInTouchButton, MarqueeTitle, ProjectCard } from '../components'
 import type {
-  ActionButtonSize,
-  ActionButtonVariant,
   GetInTouchButtonTone,
   MarqueeTitleDirection,
-  MetricCardAlignment,
-  MetricCardTone,
 } from '../components'
 import '../../devlink/css/global.css'
 import './styles.css'
 
-type ComponentKey = 'navbar' | 'button' | 'getInTouch' | 'marqueeTitle' | 'metric' | 'projectCard'
+type ComponentKey = 'navbar' | 'arrowButton' | 'getInTouch' | 'marqueeTitle' | 'projectCard'
 type CanvasMode = 'Contained' | 'Full width'
 
 const componentTabs: Array<{ key: ComponentKey; label: string }> = [
   { key: 'navbar', label: 'ACG Navbar' },
-  { key: 'button', label: 'Action Button' },
+  { key: 'arrowButton', label: 'Arrow Button' },
   { key: 'getInTouch', label: 'Get In Touch' },
   { key: 'marqueeTitle', label: 'Marquee Title' },
   { key: 'projectCard', label: 'Project Card' },
-  { key: 'metric', label: 'Metric Card' },
 ]
 
 function PreviewApp() {
   const [activeComponent, setActiveComponent] = useState<ComponentKey>('navbar')
-  const [buttonVariant, setButtonVariant] = useState<ActionButtonVariant>('Primary')
-  const [buttonSize, setButtonSize] = useState<ActionButtonSize>('Medium')
+  const [arrowAngle, setArrowAngle] = useState(0)
+  const [arrowFontSize, setArrowFontSize] = useState(64)
   const [canvasMode, setCanvasMode] = useState<CanvasMode>('Contained')
   const [getInTouchTone, setGetInTouchTone] = useState<GetInTouchButtonTone>('Olive')
   const [marqueeDirection, setMarqueeDirection] = useState<MarqueeTitleDirection>('Left')
@@ -37,8 +32,6 @@ function PreviewApp() {
   const [marqueeFontWeight, setMarqueeFontWeight] = useState(800)
   const [marqueeWidth, setMarqueeWidth] = useState(720)
   const [marqueeHeight, setMarqueeHeight] = useState(120)
-  const [metricTone, setMetricTone] = useState<MetricCardTone>('Light')
-  const [metricAlignment, setMetricAlignment] = useState<MetricCardAlignment>('Left')
   const isFullWidth = canvasMode === 'Full width'
 
   useEffect(() => {
@@ -85,8 +78,8 @@ function PreviewApp() {
 
         <div className={isFullWidth ? 'canvas-band full-width-canvas' : 'canvas-band'}>
           {renderPreview(activeComponent, {
-            buttonVariant,
-            buttonSize,
+            arrowAngle,
+            arrowFontSize,
             canvasMode,
             getInTouchTone,
             marqueeDirection,
@@ -95,8 +88,6 @@ function PreviewApp() {
             marqueeHeight,
             marqueeSpeed,
             marqueeWidth,
-            metricTone,
-            metricAlignment,
           })}
         </div>
 
@@ -109,21 +100,13 @@ function PreviewApp() {
             />
           </ControlGroup>
 
-          {activeComponent === 'button' ? (
+          {activeComponent === 'arrowButton' ? (
             <>
-              <ControlGroup label="Variant">
-                <SegmentedControl
-                  options={['Primary', 'Secondary', 'Ghost']}
-                  value={buttonVariant}
-                  onChange={(value) => setButtonVariant(value as ActionButtonVariant)}
-                />
+              <ControlGroup label="Arrow Angle">
+                <NumberControl max={360} min={-360} step={15} value={arrowAngle} onChange={setArrowAngle} />
               </ControlGroup>
-              <ControlGroup label="Size">
-                <SegmentedControl
-                  options={['Small', 'Medium', 'Large']}
-                  value={buttonSize}
-                  onChange={(value) => setButtonSize(value as ActionButtonSize)}
-                />
+              <ControlGroup label="Font Size">
+                <NumberControl max={120} min={16} value={arrowFontSize} onChange={setArrowFontSize} />
               </ControlGroup>
             </>
           ) : null}
@@ -136,25 +119,6 @@ function PreviewApp() {
                 onChange={(value) => setGetInTouchTone(value as GetInTouchButtonTone)}
               />
             </ControlGroup>
-          ) : null}
-
-          {activeComponent === 'metric' ? (
-            <>
-              <ControlGroup label="Tone">
-                <SegmentedControl
-                  options={['Light', 'Dark', 'Accent']}
-                  value={metricTone}
-                  onChange={(value) => setMetricTone(value as MetricCardTone)}
-                />
-              </ControlGroup>
-              <ControlGroup label="Alignment">
-                <SegmentedControl
-                  options={['Left', 'Center']}
-                  value={metricAlignment}
-                  onChange={(value) => setMetricAlignment(value as MetricCardAlignment)}
-                />
-              </ControlGroup>
-            </>
           ) : null}
 
           {activeComponent === 'marqueeTitle' ? (
@@ -196,8 +160,8 @@ function PreviewApp() {
 function renderPreview(
   activeComponent: ComponentKey,
   options: {
-    buttonSize: ActionButtonSize
-    buttonVariant: ActionButtonVariant
+    arrowAngle: number
+    arrowFontSize: number
     canvasMode: CanvasMode
     getInTouchTone: GetInTouchButtonTone
     marqueeDirection: MarqueeTitleDirection
@@ -206,34 +170,18 @@ function renderPreview(
     marqueeHeight: number
     marqueeSpeed: number
     marqueeWidth: number
-    metricAlignment: MetricCardAlignment
-    metricTone: MetricCardTone
   },
 ) {
-  if (activeComponent === 'button') {
+  if (activeComponent === 'arrowButton') {
     return (
       <div className="button-preview">
-        <ActionButton
-          label="Book a strategy call"
-          link={{ href: '#contact' }}
-          size={options.buttonSize}
-          variant={options.buttonVariant}
+        <ArrowButton
+          arrowAngle={options.arrowAngle}
+          fontSize={options.arrowFontSize}
+          label="VIEW ALL WORK"
+          link={{ href: '#work' }}
         />
       </div>
-    )
-  }
-
-  if (activeComponent === 'metric') {
-    return (
-      <MetricCard
-        alignment={options.metricAlignment}
-        description="Measured across launch campaigns and retained for local QA."
-        eyebrow="Library health"
-        label="Reusable components"
-        suffix="%"
-        tone={options.metricTone}
-        value="98"
-      />
     )
   }
 
