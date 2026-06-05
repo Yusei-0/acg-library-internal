@@ -228,7 +228,10 @@ export function ACGNavbar({
 
   const showCompact = isCompact || isMenuOpen
   const rootStyle = getRootStyle(layoutProps)
-  const headerContactHoverColor = showCompact ? contactHoverColor : contactOrangeHoverColor
+  const resolvedContactColor = resolveColor(contactColor, colorVars.nocturnalForest)
+  const resolvedContactHoverColor = resolveColor(contactHoverColor, colorVars.signalOrange)
+  const resolvedContactOrangeHoverColor = resolveColor(contactOrangeHoverColor, colorVars.petalMist)
+  const headerContactHoverColor = isCompact && !isMenuOpen ? resolvedContactHoverColor : resolvedContactOrangeHoverColor
 
   return (
     <>
@@ -260,7 +263,7 @@ export function ACGNavbar({
 
           <div style={contactSlotStyle}>
             <GetInTouchButton
-              color={contactColor}
+              color={resolvedContactColor}
               hoverColor={headerContactHoverColor}
               label={contactLabel}
               link={contactLink}
@@ -289,8 +292,8 @@ export function ACGNavbar({
             />
             <div style={contactSlotStyle}>
               <GetInTouchButton
-                color={contactColor}
-                hoverColor={contactOrangeHoverColor}
+                color={resolvedContactColor}
+                hoverColor={resolvedContactOrangeHoverColor}
                 label={contactLabel}
                 link={contactLink}
                 tone="Olive"
@@ -318,6 +321,10 @@ export function ACGNavbar({
 
 function createMenuItem(label: string, link?: NavbarLink): MenuItem {
   return link ? { label, link } : { label }
+}
+
+function resolveColor(value: string | undefined, fallback: string) {
+  return value?.trim() || fallback
 }
 
 function MenuAnchor({ item, textColor }: { item: MenuItem; textColor: string }) {

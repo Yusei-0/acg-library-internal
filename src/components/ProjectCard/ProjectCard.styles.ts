@@ -47,7 +47,7 @@ export const metaStyle: CSSProperties = {
   alignItems: 'center',
   display: 'grid',
   gap: 12,
-  gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr) auto',
+  gridTemplateColumns: 'auto auto minmax(0, 1fr)',
   width: '100%',
 }
 
