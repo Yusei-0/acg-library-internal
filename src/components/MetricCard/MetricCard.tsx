@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { getLayoutStyles, type ComponentLayoutProps } from '../../shared/layout'
+import { colorVars } from '../../shared/tokens'
 
 export type MetricCardTone = 'Light' | 'Dark' | 'Accent'
 export type MetricCardAlignment = 'Left' | 'Center'
@@ -18,26 +19,26 @@ export interface MetricCardProps extends ComponentLayoutProps {
 
 const toneStyles: Record<MetricCardTone, CSSProperties> = {
   Light: {
-    background: '#ffffff',
-    borderColor: '#e2e8f0',
-    color: '#0f172a',
+    background: colorVars.petalMist,
+    borderColor: colorVars.nocturnalForest30,
+    color: colorVars.nocturnalForest,
   },
   Dark: {
-    background: '#111827',
-    borderColor: '#111827',
-    color: '#ffffff',
+    background: colorVars.nocturnalForest,
+    borderColor: colorVars.nocturnalForest,
+    color: colorVars.petalMist,
   },
   Accent: {
-    background: '#eff6ff',
-    borderColor: '#bfdbfe',
-    color: '#0f172a',
+    background: colorVars.signalOrange30,
+    borderColor: colorVars.signalOrange70,
+    color: colorVars.nocturnalForest,
   },
 }
 
 const mutedColor: Record<MetricCardTone, string> = {
-  Light: '#475569',
-  Dark: '#cbd5e1',
-  Accent: '#334155',
+  Light: colorVars.nocturnalForest50,
+  Dark: colorVars.petalMist,
+  Accent: colorVars.nocturnalForest50,
 }
 
 export function MetricCard({
@@ -79,7 +80,7 @@ export function MetricCard({
         <span
           aria-hidden="true"
           style={{
-            background: tone === 'Dark' ? '#60a5fa' : '#2563eb',
+            background: tone === 'Dark' ? colorVars.signalOrange : colorVars.nocturnalForest,
             borderRadius: 999,
             display: 'block',
             height: 4,

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { getLayoutStyles, type ComponentLayoutProps } from '../../shared/layout'
+import { colorVars } from '../../shared/tokens'
 
 export type ActionButtonVariant = 'Primary' | 'Secondary' | 'Ghost'
 export type ActionButtonSize = 'Small' | 'Medium' | 'Large'
@@ -22,19 +23,19 @@ export interface ActionButtonProps extends ComponentLayoutProps {
 
 const variantStyles: Record<ActionButtonVariant, CSSProperties> = {
   Primary: {
-    background: '#111827',
-    borderColor: '#111827',
-    color: '#ffffff',
+    background: colorVars.nocturnalForest,
+    borderColor: colorVars.nocturnalForest,
+    color: colorVars.petalMist,
   },
   Secondary: {
-    background: '#ffffff',
-    borderColor: '#cbd5e1',
-    color: '#111827',
+    background: colorVars.petalMist,
+    borderColor: colorVars.nocturnalForest30,
+    color: colorVars.nocturnalForest,
   },
   Ghost: {
     background: 'transparent',
     borderColor: 'transparent',
-    color: '#111827',
+    color: colorVars.nocturnalForest,
   },
 }
 

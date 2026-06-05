@@ -17,5 +17,10 @@ export type {
   MetricCardProps,
   MetricCardTone,
 } from './MetricCard/MetricCard'
+export { MarqueeTitle } from './MarqueeTitle/MarqueeTitle'
+export type { MarqueeTitleDirection, MarqueeTitleProps } from './MarqueeTitle/MarqueeTitle'
+export { ProjectCard } from './ProjectCard/ProjectCard'
+export type { ProjectCardImage, ProjectCardLink, ProjectCardProps } from './ProjectCard/ProjectCard'
 export { ACGNavbar } from './ACGNavbar/ACGNavbar'
 export type { ACGNavbarProps, NavbarLink } from './ACGNavbar/ACGNavbar'
+export { colors as acgColors, colorVars as acgColorVars } from '../shared/tokens'

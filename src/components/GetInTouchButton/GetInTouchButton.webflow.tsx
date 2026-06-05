@@ -24,9 +24,21 @@ export default declareComponent(GetInTouchButton, {
     }),
     tone: props.Variant({
       name: 'Tone',
-      options: ['Olive', 'Orange', 'Light'],
+      options: ['Olive', 'Olive Light Hover', 'Orange', 'Light'],
       defaultValue: 'Olive',
       group: 'Style',
+    }),
+    color: props.Text({
+      name: 'Color',
+      defaultValue: '',
+      group: 'Style',
+      tooltip: 'Optional CSS color or variable. Leave empty to use the selected tone.',
+    }),
+    hoverColor: props.Text({
+      name: 'Hover Color',
+      defaultValue: '',
+      group: 'Style',
+      tooltip: 'Optional CSS color or variable. Leave empty to use the selected tone.',
     }),
     ...webflowLayoutProps,
   },

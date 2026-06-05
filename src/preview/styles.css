@@ -1,12 +1,20 @@
 :root {
-  --acg-nav-background: #ff4f00;
-  --acg-nav-compact-background: #f4ede9;
-  --acg-nav-menu-background: #ff4f00;
-  --acg-nav-menu-hover: #0b0b0b;
-  --acg-nav-menu-text: #9d3400;
-  --acg-nav-text: #0b0b0b;
-  color: #101418;
-  background: #f4f0e8;
+  --acg-color-signal-orange: #FF5A00;
+  --acg-color-signal-orange-70: rgba(255, 90, 0, 0.7);
+  --acg-color-signal-orange-30: rgba(255, 90, 0, 0.3);
+  --acg-color-nocturnal-forest: #152304;
+  --acg-color-nocturnal-forest-50: rgba(21, 35, 4, 0.5);
+  --acg-color-nocturnal-forest-40: rgba(21, 35, 4, 0.4);
+  --acg-color-nocturnal-forest-30: rgba(21, 35, 4, 0.3);
+  --acg-color-petal-mist: #F9F0ED;
+  --acg-nav-background: var(--acg-color-signal-orange);
+  --acg-nav-compact-background: var(--acg-color-petal-mist);
+  --acg-nav-menu-background: var(--acg-color-signal-orange);
+  --acg-nav-menu-hover: var(--acg-color-nocturnal-forest);
+  --acg-nav-menu-text: var(--acg-color-nocturnal-forest-50);
+  --acg-nav-text: var(--acg-color-nocturnal-forest);
+  color: var(--acg-color-nocturnal-forest);
+  background: var(--acg-color-petal-mist);
   font-family: "Ppneueyork", Georgia, serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -34,8 +42,8 @@ a {
 
 .preview-sidebar {
   align-content: space-between;
-  background: #101418;
-  color: #f4f0e8;
+  background: var(--acg-color-nocturnal-forest);
+  color: var(--acg-color-petal-mist);
   display: grid;
   gap: 40px;
   min-height: 100svh;
@@ -45,7 +53,7 @@ a {
 }
 
 .eyebrow {
-  color: #ff6a2a;
+  color: var(--acg-color-signal-orange);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0;
@@ -80,9 +88,9 @@ h2 {
 .tab-button {
   align-items: center;
   background: transparent;
-  border: 1px solid rgba(244, 240, 232, 0.2);
+  border: 1px solid var(--acg-color-signal-orange-30);
   border-radius: 8px;
-  color: #f4f0e8;
+  color: var(--acg-color-petal-mist);
   cursor: pointer;
   display: flex;
   font: inherit;
@@ -96,8 +104,8 @@ h2 {
 
 .tab-button:hover,
 .tab-button.active {
-  background: #f4f0e8;
-  color: #101418;
+  background: var(--acg-color-petal-mist);
+  color: var(--acg-color-nocturnal-forest);
 }
 
 .preview-stage {
@@ -143,10 +151,10 @@ h2 {
 
 .status-pill {
   align-items: center;
-  background: #d6f2df;
-  border: 1px solid #80b88f;
+  background: var(--acg-color-signal-orange-30);
+  border: 1px solid var(--acg-color-signal-orange-70);
   border-radius: 999px;
-  color: #17442f;
+  color: var(--acg-color-nocturnal-forest);
   display: inline-flex;
   font-size: 13px;
   font-weight: 800;
@@ -158,11 +166,11 @@ h2 {
 .canvas-band {
   align-items: center;
   background:
-    linear-gradient(90deg, rgba(16, 20, 24, 0.06) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(16, 20, 24, 0.06) 1px, transparent 1px),
-    #fffaf1;
+    linear-gradient(90deg, var(--acg-color-nocturnal-forest-30) 1px, transparent 1px),
+    linear-gradient(180deg, var(--acg-color-nocturnal-forest-30) 1px, transparent 1px),
+    var(--acg-color-petal-mist);
   background-size: 28px 28px;
-  border: 1px solid #ded4c4;
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
   border-radius: 8px;
   display: flex;
   justify-content: center;
@@ -173,7 +181,7 @@ h2 {
 
 .full-width-canvas {
   align-items: stretch;
-  background: #f4ede9;
+  background: var(--acg-color-petal-mist);
   border: 0;
   border-radius: 0;
   display: block;
@@ -192,8 +200,8 @@ h2 {
 
 .control-band {
   align-items: end;
-  background: #ffffff;
-  border: 1px solid #ded4c4;
+  background: var(--acg-color-petal-mist);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
   border-radius: 8px;
   display: flex;
   flex-wrap: wrap;
@@ -211,7 +219,7 @@ h2 {
 }
 
 .control-group > span {
-  color: #5c554d;
+  color: var(--acg-color-nocturnal-forest-50);
   font-size: 12px;
   font-weight: 800;
   line-height: 1;
@@ -219,8 +227,8 @@ h2 {
 }
 
 .segmented-control {
-  background: #eee6da;
-  border: 1px solid #ded4c4;
+  background: var(--acg-color-signal-orange-30);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
   border-radius: 8px;
   display: flex;
   gap: 4px;
@@ -231,7 +239,7 @@ h2 {
   background: transparent;
   border: 0;
   border-radius: 6px;
-  color: #3a342d;
+  color: var(--acg-color-nocturnal-forest);
   cursor: pointer;
   font: inherit;
   font-size: 14px;
@@ -241,12 +249,25 @@ h2 {
 }
 
 .segment.active {
-  background: #101418;
-  color: #ffffff;
+  background: var(--acg-color-nocturnal-forest);
+  color: var(--acg-color-petal-mist);
+}
+
+.number-control {
+  background: var(--acg-color-petal-mist);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
+  border-radius: 6px;
+  color: var(--acg-color-nocturnal-forest);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  min-height: 34px;
+  padding: 0 10px;
+  width: 92px;
 }
 
 .quiet-note {
-  color: #5c554d;
+  color: var(--acg-color-nocturnal-forest-50);
   font-size: 14px;
   line-height: 1.45;
   max-width: 620px;
@@ -261,13 +282,32 @@ h2 {
 }
 
 .dark-button-preview {
-  background: #ff4f00;
+  background: var(--acg-color-signal-orange);
+}
+
+.marquee-title-preview {
+  align-items: center;
+  background: var(--acg-color-petal-mist);
+  display: flex;
+  justify-content: center;
+  min-height: 280px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.project-card-preview {
+  align-items: start;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, auto));
+  justify-content: center;
+  width: 100%;
 }
 
 .navbar-preview {
   align-self: stretch;
-  background: #f4ede9;
-  border: 1px solid #d6c9bd;
+  background: var(--acg-color-petal-mist);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
   border-radius: 8px;
   height: 420px;
   max-width: 1000px;
@@ -285,12 +325,12 @@ h2 {
 }
 
 .navbar-sections {
-  background: #f4ede9;
+  background: var(--acg-color-petal-mist);
 }
 
 .navbar-section {
   align-content: center;
-  border-bottom: 1px solid rgba(11, 11, 11, 0.16);
+  border-bottom: 1px solid var(--acg-color-nocturnal-forest-30);
   display: grid;
   gap: 18px;
   min-height: 82svh;
@@ -298,7 +338,7 @@ h2 {
 }
 
 .navbar-section:nth-child(even) {
-  background: #fffaf1;
+  background: var(--acg-color-signal-orange-30);
 }
 
 .navbar-section span {
@@ -323,7 +363,7 @@ h2 {
 }
 
 .navbar-section p {
-  color: #4e3629;
+  color: var(--acg-color-nocturnal-forest-50);
   font-size: clamp(20px, 2.4vw, 34px);
   font-weight: 500;
   line-height: 1.12;
@@ -357,6 +397,11 @@ h2 {
 
   .segmented-control {
     flex-wrap: wrap;
+  }
+
+  .project-card-preview {
+    grid-template-columns: 1fr;
+    justify-items: center;
   }
 
   .full-width-mode .preview-sidebar {

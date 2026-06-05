@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import acgLogoDark from '../../assets/acg-logo-dark.png'
 import acgLogoPrincipal from '../../assets/acg-logo-principal.png'
 import type { ComponentLayoutProps } from '../../shared/layout'
+import { colorVars } from '../../shared/tokens'
 import { GetInTouchButton } from '../GetInTouchButton/GetInTouchButton'
 import {
   contactSlotStyle,
@@ -34,10 +35,24 @@ export interface NavbarLink {
   preload?: string
 }
 
+export interface NavbarImage {
+  src: string
+  alt?: string
+}
+
 export interface ACGNavbarProps extends ComponentLayoutProps {
   logoText?: string
+  heroLogo?: NavbarImage
+  compactLogo?: NavbarImage
+  menuLogo?: NavbarImage
+  heroLogoHeight?: number
+  compactLogoHeight?: number
+  menuLogoHeight?: number
   contactLabel?: string
   contactLink?: NavbarLink
+  contactColor?: string
+  contactHoverColor?: string
+  contactOrangeHoverColor?: string
   menuLabel?: string
   closeLabel?: string
   firstLabel?: string
@@ -73,8 +88,13 @@ interface MenuItem {
 export function ACGNavbar({
   compactBackground = defaultCompactBackground,
   closeLabel = 'CLOSE',
+  compactLogo,
+  compactLogoHeight = 39,
+  contactColor = colorVars.nocturnalForest,
+  contactHoverColor = colorVars.signalOrange,
   contactLabel = 'GET IN TOUCH',
   contactLink = { href: '#contact' },
+  contactOrangeHoverColor = colorVars.petalMist,
   eighthLabel = '',
   eighthLink,
   fifthLabel = '',
@@ -83,10 +103,14 @@ export function ACGNavbar({
   firstLink = { href: '#what-we-do' },
   fourthLabel = 'ABOUT',
   fourthLink = { href: '#about' },
+  heroLogo,
+  heroLogoHeight = 39,
   logoText = 'Logo',
   menuLabel = 'MENU',
   menuBackground = defaultMenuBackground,
   menuHoverColor = defaultMenuHoverColor,
+  menuLogo,
+  menuLogoHeight = 39,
   menuTextColor = defaultMenuTextColor,
   navBackground = defaultNavBackground,
   scrollThreshold = 24,
@@ -204,6 +228,7 @@ export function ACGNavbar({
 
   const showCompact = isCompact || isMenuOpen
   const rootStyle = getRootStyle(layoutProps)
+  const headerContactHoverColor = showCompact ? contactHoverColor : contactOrangeHoverColor
 
   return (
     <>
@@ -221,10 +246,26 @@ export function ACGNavbar({
             </nav>
           )}
 
-          <LogoLink isOverlay={false} logoText={logoText} showCompact={showCompact} />
+          <LogoLink
+            compactLogo={compactLogo}
+            compactLogoHeight={compactLogoHeight}
+            heroLogo={heroLogo}
+            heroLogoHeight={heroLogoHeight}
+            isOverlay={false}
+            logoText={logoText}
+            menuLogo={menuLogo}
+            menuLogoHeight={menuLogoHeight}
+            showCompact={showCompact}
+          />
 
           <div style={contactSlotStyle}>
-            <GetInTouchButton label={contactLabel} link={contactLink} tone="Olive" />
+            <GetInTouchButton
+              color={contactColor}
+              hoverColor={headerContactHoverColor}
+              label={contactLabel}
+              link={contactLink}
+              tone="Olive"
+            />
           </div>
         </header>
       </div>
@@ -235,9 +276,25 @@ export function ACGNavbar({
             <button style={getCloseButtonStyle()} onClick={() => setIsMenuOpen(false)} type="button">
               {closeLabel}
             </button>
-            <LogoLink isOverlay logoText={logoText} showCompact />
+            <LogoLink
+              compactLogo={compactLogo}
+              compactLogoHeight={compactLogoHeight}
+              heroLogo={heroLogo}
+              heroLogoHeight={heroLogoHeight}
+              isOverlay
+              logoText={logoText}
+              menuLogo={menuLogo}
+              menuLogoHeight={menuLogoHeight}
+              showCompact
+            />
             <div style={contactSlotStyle}>
-              <GetInTouchButton label={contactLabel} link={contactLink} tone="Olive" />
+              <GetInTouchButton
+                color={contactColor}
+                hoverColor={contactOrangeHoverColor}
+                label={contactLabel}
+                link={contactLink}
+                tone="Olive"
+              />
             </div>
           </header>
           <div ref={scrollerRef} style={menuScrollerStyle}>
@@ -277,19 +334,35 @@ function MenuAnchor({ item, textColor }: { item: MenuItem; textColor: string }) 
 }
 
 function LogoLink({
+  compactLogo,
+  compactLogoHeight,
+  heroLogo,
+  heroLogoHeight,
   isOverlay,
   logoText,
+  menuLogo,
+  menuLogoHeight,
   showCompact,
 }: {
+  compactLogo: NavbarImage | undefined
+  compactLogoHeight: number
+  heroLogo: NavbarImage | undefined
+  heroLogoHeight: number
   isOverlay: boolean
   logoText: string
+  menuLogo: NavbarImage | undefined
+  menuLogoHeight: number
   showCompact: boolean
 }) {
-  const logoSrc = isOverlay ? acgLogoDark : showCompact ? acgLogoPrincipal : acgLogoDark
+  const logo = isOverlay
+    ? { height: menuLogoHeight, image: menuLogo ?? { src: acgLogoDark, alt: logoText } }
+    : showCompact
+      ? { height: compactLogoHeight, image: compactLogo ?? { src: acgLogoPrincipal, alt: logoText } }
+      : { height: heroLogoHeight, image: heroLogo ?? { src: acgLogoDark, alt: logoText } }
 
   return (
     <a aria-label={logoText} href="#top" style={logoLinkStyle}>
-      <img alt="" src={logoSrc} style={logoImageStyle} />
+      <img alt={logo.image.alt ?? ''} src={logo.image.src} style={{ ...logoImageStyle, height: logo.height }} />
     </a>
   )
 }

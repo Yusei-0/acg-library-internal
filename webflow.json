@@ -2,11 +2,13 @@
   "siteId": "6a034d161254a8d8ce2fc48a",
   "library": {
     "id": "webflow-studio-library",
-    "name": "Webflow Studio Library",
+    "name": "ACG Components Internal",
     "components": [
       "./src/components/ACGNavbar/ACGNavbar.webflow.tsx",
       "./src/components/ActionButton/ActionButton.webflow.tsx",
       "./src/components/GetInTouchButton/GetInTouchButton.webflow.tsx",
+      "./src/components/MarqueeTitle/MarqueeTitle.webflow.tsx",
+      "./src/components/ProjectCard/ProjectCard.webflow.tsx",
       "./src/components/MetricCard/MetricCard.webflow.tsx"
     ],
     "globals": "./src/global.webflow.ts"

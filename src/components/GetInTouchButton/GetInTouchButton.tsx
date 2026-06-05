@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { ComponentLayoutProps } from '../../shared/layout'
 import { getButtonStyle, labelStyle, outlineStyle, toneStyles } from './GetInTouchButton.styles'
 
-export type GetInTouchButtonTone = 'Olive' | 'Orange' | 'Light'
+export type GetInTouchButtonTone = 'Olive' | 'Olive Light Hover' | 'Orange' | 'Light'
 
 export interface GetInTouchButtonLink {
   href: string
@@ -14,11 +14,15 @@ export interface GetInTouchButtonProps extends ComponentLayoutProps {
   label?: string
   link?: GetInTouchButtonLink
   tone?: GetInTouchButtonTone
+  color?: string
+  hoverColor?: string
   ariaLabel?: string
 }
 
 export function GetInTouchButton({
   ariaLabel,
+  color,
+  hoverColor,
   label = 'GET IN TOUCH',
   link = { href: '#contact' },
   tone = 'Olive',
@@ -27,7 +31,9 @@ export function GetInTouchButton({
   const [isHovered, setIsHovered] = useState(false)
   const [isPressed, setIsPressed] = useState(false)
   const colors = toneStyles[tone]
-  const currentColor = isHovered || isPressed ? colors.hoverColor : colors.color
+  const baseColor = color || colors.color
+  const activeColor = hoverColor || colors.hoverColor
+  const currentColor = isHovered || isPressed ? activeColor : baseColor
   const style = getButtonStyle({ color: currentColor, isPressed, layoutProps })
 
   return (

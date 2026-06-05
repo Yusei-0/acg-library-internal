@@ -1,19 +1,24 @@
 import type { CSSProperties } from 'react'
 import { getLayoutStyles, type ComponentLayoutProps } from '../../shared/layout'
+import { colorVars } from '../../shared/tokens'
 import type { GetInTouchButtonTone } from './GetInTouchButton'
 
 export const toneStyles: Record<GetInTouchButtonTone, { color: string; hoverColor: string }> = {
   Olive: {
-    color: '#13240a',
-    hoverColor: '#ff4f00',
+    color: colorVars.nocturnalForest,
+    hoverColor: colorVars.signalOrange,
+  },
+  'Olive Light Hover': {
+    color: colorVars.nocturnalForest,
+    hoverColor: colorVars.petalMist,
   },
   Orange: {
-    color: '#ff4f00',
-    hoverColor: '#13240a',
+    color: colorVars.signalOrange,
+    hoverColor: colorVars.nocturnalForest,
   },
   Light: {
-    color: '#ffffff',
-    hoverColor: '#13240a',
+    color: colorVars.petalMist,
+    hoverColor: colorVars.nocturnalForest,
   },
 }
 

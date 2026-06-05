@@ -1,12 +1,13 @@
 import type { CSSProperties } from 'react'
 import { getLayoutStyles, type ComponentLayoutProps } from '../../shared/layout'
+import { colorVars } from '../../shared/tokens'
 
-export const defaultNavBackground = 'var(--acg-nav-background, #ff4f00)'
-export const defaultCompactBackground = 'var(--acg-nav-compact-background, #f4ede9)'
-export const defaultMenuBackground = 'var(--acg-nav-menu-background, var(--acg-nav-background, #ff4f00))'
-export const defaultTextColor = 'var(--acg-nav-text, #0b0b0b)'
-export const defaultMenuTextColor = 'var(--acg-nav-menu-text, #9d3400)'
-export const defaultMenuHoverColor = 'var(--acg-nav-menu-hover, #0b0b0b)'
+export const defaultNavBackground = `var(--acg-nav-background, ${colorVars.signalOrange})`
+export const defaultCompactBackground = `var(--acg-nav-compact-background, ${colorVars.petalMist})`
+export const defaultMenuBackground = `var(--acg-nav-menu-background, var(--acg-nav-background, ${colorVars.signalOrange}))`
+export const defaultTextColor = `var(--acg-nav-text, ${colorVars.nocturnalForest})`
+export const defaultMenuTextColor = `var(--acg-nav-menu-text, ${colorVars.nocturnalForest50})`
+export const defaultMenuHoverColor = `var(--acg-nav-menu-hover, ${colorVars.nocturnalForest})`
 
 const navbarHeight = 115
 
@@ -91,7 +92,7 @@ export function getMenuButtonStyle(color: string): CSSProperties {
 
 export function getCloseButtonStyle(): CSSProperties {
   return {
-    ...getMenuButtonStyle('#ffffff'),
+    ...getMenuButtonStyle(colorVars.petalMist),
     fontSize: 16,
     fontWeight: 800,
     textDecoration: 'none',

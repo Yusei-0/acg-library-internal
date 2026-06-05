@@ -1,24 +1,27 @@
 import { StrictMode, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { ACGNavbar, ActionButton, GetInTouchButton, MetricCard } from '../components'
+import { ACGNavbar, ActionButton, GetInTouchButton, MarqueeTitle, MetricCard, ProjectCard } from '../components'
 import type {
   ActionButtonSize,
   ActionButtonVariant,
   GetInTouchButtonTone,
+  MarqueeTitleDirection,
   MetricCardAlignment,
   MetricCardTone,
 } from '../components'
 import '../../devlink/css/global.css'
 import './styles.css'
 
-type ComponentKey = 'navbar' | 'button' | 'getInTouch' | 'metric'
+type ComponentKey = 'navbar' | 'button' | 'getInTouch' | 'marqueeTitle' | 'metric' | 'projectCard'
 type CanvasMode = 'Contained' | 'Full width'
 
 const componentTabs: Array<{ key: ComponentKey; label: string }> = [
   { key: 'navbar', label: 'ACG Navbar' },
   { key: 'button', label: 'Action Button' },
   { key: 'getInTouch', label: 'Get In Touch' },
+  { key: 'marqueeTitle', label: 'Marquee Title' },
+  { key: 'projectCard', label: 'Project Card' },
   { key: 'metric', label: 'Metric Card' },
 ]
 
@@ -28,6 +31,12 @@ function PreviewApp() {
   const [buttonSize, setButtonSize] = useState<ActionButtonSize>('Medium')
   const [canvasMode, setCanvasMode] = useState<CanvasMode>('Contained')
   const [getInTouchTone, setGetInTouchTone] = useState<GetInTouchButtonTone>('Olive')
+  const [marqueeDirection, setMarqueeDirection] = useState<MarqueeTitleDirection>('Left')
+  const [marqueeSpeed, setMarqueeSpeed] = useState(14)
+  const [marqueeFontSize, setMarqueeFontSize] = useState(40)
+  const [marqueeFontWeight, setMarqueeFontWeight] = useState(800)
+  const [marqueeWidth, setMarqueeWidth] = useState(720)
+  const [marqueeHeight, setMarqueeHeight] = useState(120)
   const [metricTone, setMetricTone] = useState<MetricCardTone>('Light')
   const [metricAlignment, setMetricAlignment] = useState<MetricCardAlignment>('Left')
   const isFullWidth = canvasMode === 'Full width'
@@ -48,7 +57,7 @@ function PreviewApp() {
       <aside className="preview-sidebar" aria-label="Component library">
         <div>
           <p className="eyebrow">Webflow Studio</p>
-          <h1>Component Library</h1>
+          <h1>ACG Components Internal</h1>
         </div>
 
         <nav className="component-tabs" aria-label="Preview components">
@@ -80,6 +89,12 @@ function PreviewApp() {
             buttonSize,
             canvasMode,
             getInTouchTone,
+            marqueeDirection,
+            marqueeFontSize,
+            marqueeFontWeight,
+            marqueeHeight,
+            marqueeSpeed,
+            marqueeWidth,
             metricTone,
             metricAlignment,
           })}
@@ -116,7 +131,7 @@ function PreviewApp() {
           {activeComponent === 'getInTouch' ? (
             <ControlGroup label="Tone">
               <SegmentedControl
-                options={['Olive', 'Orange', 'Light']}
+                options={['Olive', 'Olive Light Hover', 'Orange', 'Light']}
                 value={getInTouchTone}
                 onChange={(value) => setGetInTouchTone(value as GetInTouchButtonTone)}
               />
@@ -142,6 +157,33 @@ function PreviewApp() {
             </>
           ) : null}
 
+          {activeComponent === 'marqueeTitle' ? (
+            <>
+              <ControlGroup label="Direction">
+                <SegmentedControl
+                  options={['Left', 'Right']}
+                  value={marqueeDirection}
+                  onChange={(value) => setMarqueeDirection(value as MarqueeTitleDirection)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Speed">
+                <NumberControl max={60} min={1} value={marqueeSpeed} onChange={setMarqueeSpeed} />
+              </ControlGroup>
+              <ControlGroup label="Font Size">
+                <NumberControl max={140} min={16} value={marqueeFontSize} onChange={setMarqueeFontSize} />
+              </ControlGroup>
+              <ControlGroup label="Weight">
+                <NumberControl max={1000} min={100} step={100} value={marqueeFontWeight} onChange={setMarqueeFontWeight} />
+              </ControlGroup>
+              <ControlGroup label="Width">
+                <NumberControl max={1200} min={220} step={10} value={marqueeWidth} onChange={setMarqueeWidth} />
+              </ControlGroup>
+              <ControlGroup label="Height">
+                <NumberControl max={260} min={48} step={4} value={marqueeHeight} onChange={setMarqueeHeight} />
+              </ControlGroup>
+            </>
+          ) : null}
+
           {activeComponent === 'navbar' ? (
             <div className="quiet-note">Use Full width for the closest page-level navbar test.</div>
           ) : null}
@@ -158,6 +200,12 @@ function renderPreview(
     buttonVariant: ActionButtonVariant
     canvasMode: CanvasMode
     getInTouchTone: GetInTouchButtonTone
+    marqueeDirection: MarqueeTitleDirection
+    marqueeFontSize: number
+    marqueeFontWeight: number
+    marqueeHeight: number
+    marqueeSpeed: number
+    marqueeWidth: number
     metricAlignment: MetricCardAlignment
     metricTone: MetricCardTone
   },
@@ -193,6 +241,49 @@ function renderPreview(
     return (
       <div className={options.getInTouchTone === 'Light' ? 'button-preview dark-button-preview' : 'button-preview'}>
         <GetInTouchButton label="GET IN TOUCH" link={{ href: '#contact' }} tone={options.getInTouchTone} />
+      </div>
+    )
+  }
+
+  if (activeComponent === 'marqueeTitle') {
+    return (
+      <div className="marquee-title-preview">
+        <MarqueeTitle
+          direction={options.marqueeDirection}
+          fontSize={options.marqueeFontSize}
+          fontWeight={options.marqueeFontWeight}
+          height={options.marqueeHeight}
+          speed={options.marqueeSpeed}
+          text="How we work"
+          width={options.marqueeWidth}
+        />
+      </div>
+    )
+  }
+
+  if (activeComponent === 'projectCard') {
+    return (
+      <div className="project-card-preview">
+        <ProjectCard
+          category="(Branding)"
+          clientName="Client Name"
+          imageHeight={520}
+          link={{ href: '#project' }}
+          projectTitle="Project Title"
+          tabletImageHeight={360}
+          tabletWidth={360}
+          width={520}
+        />
+        <ProjectCard
+          category="(Editorial)"
+          clientName="Client Name"
+          imageHeight={520}
+          link={{ href: '#project-alt' }}
+          projectTitle="Project Title"
+          tabletImageHeight={360}
+          tabletWidth={360}
+          width={520}
+        />
       </div>
     )
   }
@@ -290,6 +381,32 @@ function SegmentedControl({
         </button>
       ))}
     </div>
+  )
+}
+
+function NumberControl({
+  max,
+  min,
+  onChange,
+  step = 1,
+  value,
+}: {
+  max: number
+  min: number
+  onChange: (value: number) => void
+  step?: number
+  value: number
+}) {
+  return (
+    <input
+      className="number-control"
+      max={max}
+      min={min}
+      onChange={(event) => onChange(Number(event.target.value))}
+      step={step}
+      type="number"
+      value={value}
+    />
   )
 }
 
