@@ -14,14 +14,19 @@ export const marqueeTitleKeyframes = `
 }
 `
 
-export function getRootStyle(layoutProps: ComponentLayoutProps): CSSProperties {
+export function getRootStyle({ edgeFade, layoutProps }: { edgeFade: number; layoutProps: ComponentLayoutProps }): CSSProperties {
+  const fade = Math.max(0, edgeFade)
+  const mask = fade > 0 ? `linear-gradient(90deg, transparent 0, #000 ${fade}px, #000 calc(100% - ${fade}px), transparent 100%)` : undefined
+
   return {
     alignItems: 'center',
     boxSizing: 'border-box',
     display: 'flex',
+    maskImage: mask,
     maxWidth: '100%',
     overflow: 'hidden',
     position: 'relative',
+    WebkitMaskImage: mask,
     ...getLayoutStyles(layoutProps),
   }
 }

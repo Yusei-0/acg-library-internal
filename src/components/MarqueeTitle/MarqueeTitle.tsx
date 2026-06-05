@@ -17,6 +17,7 @@ export interface MarqueeTitleProps extends ComponentLayoutProps {
   text?: string
   className?: string
   direction?: MarqueeTitleDirection
+  edgeFade?: number
   speed?: number
   fontSize?: number
   tabletFontSize?: number
@@ -37,6 +38,7 @@ export interface MarqueeTitleProps extends ComponentLayoutProps {
 export function MarqueeTitle({
   className = '',
   direction = 'Left',
+  edgeFade = 44,
   fontFamily = 'Ppneueyork, Georgia, serif',
   fontSize = 40,
   fontWeight = 800,
@@ -56,7 +58,7 @@ export function MarqueeTitle({
   ...layoutProps
 }: MarqueeTitleProps) {
   const instanceId = useId().replace(/[^a-zA-Z0-9_-]/g, '')
-  const rootStyle = getRootStyle(layoutProps)
+  const rootStyle = getRootStyle({ edgeFade, layoutProps })
   const trackStyle = getTrackStyle({ direction, speed })
   const groupStyle = getGroupStyle(Math.max(0, textGap))
   const orangeTextStyle = getTextStyle({

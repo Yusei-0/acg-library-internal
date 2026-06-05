@@ -34,6 +34,15 @@ export default declareComponent(MarqueeTitle, {
       group: 'Motion',
       tooltip: 'Animation duration in seconds. Lower values move faster.',
     }),
+    edgeFade: props.Number({
+      name: 'Edge Fade',
+      defaultValue: 44,
+      min: 0,
+      max: 320,
+      decimals: 0,
+      group: 'Style',
+      tooltip: 'Fade distance in pixels at each horizontal edge. Use 0 to disable.',
+    }),
     fontSize: props.Number({
       name: 'Desktop Font Size',
       defaultValue: 40,
