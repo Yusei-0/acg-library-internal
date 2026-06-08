@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ACGFooter, ACGNavbar, ArrowButton, GetInTouchButton, MarqueeTitle, ProjectCard } from '../components'
 import type {
+  GetInTouchButtonSize,
   GetInTouchButtonTone,
   MarqueeTitleDirection,
 } from '../components'
@@ -26,6 +27,7 @@ function PreviewApp() {
   const [arrowAngle, setArrowAngle] = useState(0)
   const [arrowFontSize, setArrowFontSize] = useState(64)
   const [canvasMode, setCanvasMode] = useState<CanvasMode>('Contained')
+  const [getInTouchSize, setGetInTouchSize] = useState<GetInTouchButtonSize>('Normal')
   const [getInTouchTone, setGetInTouchTone] = useState<GetInTouchButtonTone>('Olive')
   const [marqueeDirection, setMarqueeDirection] = useState<MarqueeTitleDirection>('Left')
   const [marqueeSpeed, setMarqueeSpeed] = useState(14)
@@ -82,6 +84,7 @@ function PreviewApp() {
             arrowAngle,
             arrowFontSize,
             canvasMode,
+            getInTouchSize,
             getInTouchTone,
             marqueeDirection,
             marqueeFontSize,
@@ -113,13 +116,22 @@ function PreviewApp() {
           ) : null}
 
           {activeComponent === 'getInTouch' ? (
-            <ControlGroup label="Tone">
-              <SegmentedControl
-                options={['Olive', 'Olive Light Hover', 'Orange', 'Light']}
-                value={getInTouchTone}
-                onChange={(value) => setGetInTouchTone(value as GetInTouchButtonTone)}
-              />
-            </ControlGroup>
+            <>
+              <ControlGroup label="Tone">
+                <SegmentedControl
+                  options={['Olive', 'Olive Light Hover', 'Orange', 'Light']}
+                  value={getInTouchTone}
+                  onChange={(value) => setGetInTouchTone(value as GetInTouchButtonTone)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Size">
+                <SegmentedControl
+                  options={['Small', 'Normal', 'Large', 'Big']}
+                  value={getInTouchSize}
+                  onChange={(value) => setGetInTouchSize(value as GetInTouchButtonSize)}
+                />
+              </ControlGroup>
+            </>
           ) : null}
 
           {activeComponent === 'marqueeTitle' ? (
@@ -164,6 +176,7 @@ function renderPreview(
     arrowAngle: number
     arrowFontSize: number
     canvasMode: CanvasMode
+    getInTouchSize: GetInTouchButtonSize
     getInTouchTone: GetInTouchButtonTone
     marqueeDirection: MarqueeTitleDirection
     marqueeFontSize: number
@@ -189,7 +202,12 @@ function renderPreview(
   if (activeComponent === 'getInTouch') {
     return (
       <div className={options.getInTouchTone === 'Light' ? 'button-preview dark-button-preview' : 'button-preview'}>
-        <GetInTouchButton label="GET IN TOUCH" link={{ href: '#contact' }} tone={options.getInTouchTone} />
+        <GetInTouchButton
+          label="GET IN TOUCH"
+          link={{ href: '#contact' }}
+          size={options.getInTouchSize}
+          tone={options.getInTouchTone}
+        />
       </div>
     )
   }

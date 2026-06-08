@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import type { ComponentLayoutProps } from '../../shared/layout'
-import { getButtonStyle, labelStyle, outlineStyle, toneStyles } from './GetInTouchButton.styles'
+import { getButtonStyle, getLabelStyle, outlineStyle, sizeStyles, toneStyles } from './GetInTouchButton.styles'
 
 export type GetInTouchButtonTone = 'Olive' | 'Olive Light Hover' | 'Orange' | 'Light'
+export type GetInTouchButtonSize = 'Small' | 'Normal' | 'Large' | 'Big'
 
 export interface GetInTouchButtonLink {
   href: string
@@ -14,8 +15,14 @@ export interface GetInTouchButtonProps extends ComponentLayoutProps {
   label?: string
   link?: GetInTouchButtonLink
   tone?: GetInTouchButtonTone
+  size?: GetInTouchButtonSize
   color?: string
   hoverColor?: string
+  height?: number
+  width?: number
+  fontSize?: number
+  fontWeight?: number
+  strokeWidth?: number
   ariaLabel?: string
 }
 
@@ -25,16 +32,31 @@ export function GetInTouchButton({
   hoverColor,
   label = 'GET IN TOUCH',
   link = { href: '#contact' },
+  size = 'Normal',
   tone = 'Olive',
+  height,
+  width,
+  fontSize,
+  fontWeight,
+  strokeWidth,
   ...layoutProps
 }: GetInTouchButtonProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isPressed, setIsPressed] = useState(false)
   const colors = toneStyles[tone]
+  const sizeStyle = sizeStyles[size]
   const baseColor = color || colors.color
   const activeColor = hoverColor || colors.hoverColor
   const currentColor = isHovered || isPressed ? activeColor : baseColor
-  const style = getButtonStyle({ color: currentColor, isPressed, layoutProps })
+  const style = getButtonStyle({
+    color: currentColor,
+    fontSize: fontSize ?? sizeStyle.fontSize,
+    fontWeight: fontWeight ?? sizeStyle.fontWeight,
+    height: height ?? sizeStyle.height,
+    isPressed,
+    layoutProps,
+    width: width ?? sizeStyle.width,
+  })
 
   return (
     <a
@@ -57,11 +79,11 @@ export function GetInTouchButton({
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"
-          strokeWidth="2"
+          strokeWidth={strokeWidth ?? sizeStyle.strokeWidth}
           vectorEffect="non-scaling-stroke"
         />
       </svg>
-      <span style={labelStyle}>{label}</span>
+      <span style={getLabelStyle(sizeStyle.labelOffset)}>{label}</span>
     </a>
   )
 }

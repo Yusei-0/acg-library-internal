@@ -6,6 +6,7 @@ export { GetInTouchButton } from './GetInTouchButton/GetInTouchButton'
 export type {
   GetInTouchButtonLink,
   GetInTouchButtonProps,
+  GetInTouchButtonSize,
   GetInTouchButtonTone,
 } from './GetInTouchButton/GetInTouchButton'
 export { MarqueeTitle } from './MarqueeTitle/MarqueeTitle'
