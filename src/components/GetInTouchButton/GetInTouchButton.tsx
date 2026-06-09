@@ -48,14 +48,16 @@ export function GetInTouchButton({
   const baseColor = color || colors.color
   const activeColor = hoverColor || colors.hoverColor
   const currentColor = isHovered || isPressed ? activeColor : baseColor
+  const resolvePositiveNumber = (value: number | undefined, fallback: number) =>
+    typeof value === 'number' && value > 0 ? value : fallback
   const style = getButtonStyle({
     color: currentColor,
-    fontSize: fontSize ?? sizeStyle.fontSize,
-    fontWeight: fontWeight ?? sizeStyle.fontWeight,
-    height: height ?? sizeStyle.height,
+    fontSize: resolvePositiveNumber(fontSize, sizeStyle.fontSize),
+    fontWeight: resolvePositiveNumber(fontWeight, sizeStyle.fontWeight),
+    height: resolvePositiveNumber(height, sizeStyle.height),
     isPressed,
     layoutProps,
-    width: width ?? sizeStyle.width,
+    width: resolvePositiveNumber(width, sizeStyle.width),
   })
 
   return (
@@ -79,7 +81,7 @@ export function GetInTouchButton({
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"
-          strokeWidth={strokeWidth ?? sizeStyle.strokeWidth}
+          strokeWidth={resolvePositiveNumber(strokeWidth, sizeStyle.strokeWidth)}
           vectorEffect="non-scaling-stroke"
         />
       </svg>
