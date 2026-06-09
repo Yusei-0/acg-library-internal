@@ -1,6 +1,38 @@
 import { props } from '@webflow/data-types'
 
 export const webflowLayoutProps = {
+  layoutWidth: props.Number({
+    name: 'Layout Width',
+    min: 0,
+    max: 2400,
+    decimals: 0,
+    group: 'Layout',
+    tooltip: 'Optional pixel width for the root element. Leave empty or 0 to keep the component default.',
+  }),
+  layoutHeight: props.Number({
+    name: 'Layout Height',
+    min: 0,
+    max: 1600,
+    decimals: 0,
+    group: 'Layout',
+    tooltip: 'Optional pixel height for the root element. Leave empty or 0 to keep the component default.',
+  }),
+  layoutMaxWidth: props.Number({
+    name: 'Layout Max Width',
+    min: 0,
+    max: 2400,
+    decimals: 0,
+    group: 'Layout',
+    tooltip: 'Optional pixel max-width for the root element. Leave empty or 0 to keep the component default.',
+  }),
+  layoutMaxHeight: props.Number({
+    name: 'Layout Max Height',
+    min: 0,
+    max: 1600,
+    decimals: 0,
+    group: 'Layout',
+    tooltip: 'Optional pixel max-height for the root element. Leave empty or 0 to keep the component default.',
+  }),
   marginTop: props.Number({
     name: 'Margin Top',
     min: 0,

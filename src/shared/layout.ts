@@ -5,6 +5,10 @@ export type HorizontalAlignment = 'Start' | 'Center' | 'End' | 'Stretch'
 export type VerticalAlignment = 'Start' | 'Center' | 'End' | 'Stretch'
 
 export interface ComponentLayoutProps {
+  layoutWidth?: number
+  layoutHeight?: number
+  layoutMaxWidth?: number
+  layoutMaxHeight?: number
   marginTop?: number
   marginRight?: number
   marginBottom?: number
@@ -33,9 +37,17 @@ const verticalAlignmentMap: Record<VerticalAlignment, CSSProperties['justifyCont
   Stretch: 'stretch',
 }
 
+function hasPositiveNumber(value: number | undefined) {
+  return typeof value === 'number' && value > 0
+}
+
 export function getLayoutStyles(layout: ComponentLayoutProps): CSSProperties {
   const styles: CSSProperties = {}
 
+  if (hasPositiveNumber(layout.layoutWidth)) styles.width = layout.layoutWidth
+  if (hasPositiveNumber(layout.layoutHeight)) styles.height = layout.layoutHeight
+  if (hasPositiveNumber(layout.layoutMaxWidth)) styles.maxWidth = layout.layoutMaxWidth
+  if (hasPositiveNumber(layout.layoutMaxHeight)) styles.maxHeight = layout.layoutMaxHeight
   if (typeof layout.marginTop === 'number') styles.marginTop = layout.marginTop
   if (typeof layout.marginRight === 'number') styles.marginRight = layout.marginRight
   if (typeof layout.marginBottom === 'number') styles.marginBottom = layout.marginBottom
