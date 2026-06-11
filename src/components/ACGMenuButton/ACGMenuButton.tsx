@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
+import { createPortal } from 'react-dom'
 import acgLogoDark from '../../assets/acg-logo-dark.png'
 import { getLayoutStyles, type ComponentLayoutProps } from '../../shared/layout'
 import { colorVars } from '../../shared/tokens'
@@ -153,16 +154,37 @@ export function ACGMenuButton({
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [hasTriggered, setHasTriggered] = useState(false)
   const scrollerRef = useRef<HTMLDivElement>(null)
+  const resolvedCloseLabel = resolveText(closeLabel, 'CLOSE')
+  const resolvedContactLabel = resolveText(contactLabel, 'GET IN TOUCH')
+  const resolvedFirstLabel = resolveText(firstLabel, 'WHAT WE DO')
+  const resolvedSecondLabel = resolveText(secondLabel, 'HOW WE WORK')
+  const resolvedThirdLabel = resolveText(thirdLabel, 'WORK')
+  const resolvedFourthLabel = resolveText(fourthLabel, 'ABOUT')
+  const resolvedLogoText = resolveText(logoText, 'Logo')
+  const resolvedMenuLabel = resolveText(menuLabel, 'MENU')
+  const resolvedMenuBackground = resolveColor(menuBackground, defaultMenuBackground)
+  const resolvedMenuHoverColor = resolveColor(menuHoverColor, defaultMenuHoverColor)
+  const resolvedMenuTextColor = resolveColor(menuTextColor, defaultMenuTextColor)
+  const resolvedTextColor = resolveColor(textColor, defaultTextColor)
 
   const items = useMemo<MenuItem[]>(
     () =>
       [
-        createMenuItem(firstLabel, firstLink),
-        createMenuItem(secondLabel, secondLink),
-        createMenuItem(thirdLabel, thirdLink),
-        createMenuItem(fourthLabel, fourthLink),
+        createMenuItem(resolvedFirstLabel, firstLink),
+        createMenuItem(resolvedSecondLabel, secondLink),
+        createMenuItem(resolvedThirdLabel, thirdLink),
+        createMenuItem(resolvedFourthLabel, fourthLink),
       ].filter((item) => item.label.trim().length > 0),
-    [firstLabel, firstLink, fourthLabel, fourthLink, secondLabel, secondLink, thirdLabel, thirdLink],
+    [
+      firstLink,
+      fourthLink,
+      resolvedFirstLabel,
+      resolvedFourthLabel,
+      resolvedSecondLabel,
+      resolvedThirdLabel,
+      secondLink,
+      thirdLink,
+    ],
   )
 
   const repeatedItems = useMemo(
@@ -243,7 +265,7 @@ export function ACGMenuButton({
   const resolvedContactColor = resolveColor(contactColor, colorVars.nocturnalForest)
   const resolvedContactHoverColor = resolveColor(contactHoverColor, colorVars.petalMist)
   const buttonStyle = getStyledMenuButtonStyle({
-    color: textColor,
+    color: resolvedTextColor,
     fontFamily: menuButtonFontFamily,
     fontSize: menuButtonFontSize,
     fontWeight: menuButtonFontWeight,
@@ -253,7 +275,7 @@ export function ACGMenuButton({
     textTransform: menuButtonTextTransform,
   })
   const linksStyle = getAnimatedLinksStyle({
-    color: linksColor,
+    color: resolveColor(linksColor, colorVars.nocturnalForest),
     fontFamily: linksFontFamily,
     fontSize: linksFontSize,
     fontWeight: linksFontWeight,
@@ -261,6 +283,44 @@ export function ACGMenuButton({
     lineHeight: linksLineHeight,
     textTransform: linksTextTransform,
   })
+
+  const overlay = isMenuOpen ? (
+    <div style={{ ...getOverlayStyle(resolvedMenuBackground), zIndex: 2147483000 }}>
+      <header style={getOverlayHeaderStyle(resolvedMenuBackground, openMenuHeaderHeight, openMenuHeaderTopPadding)}>
+        <button style={getCloseButtonStyle()} onClick={() => setIsMenuOpen(false)} type="button">
+          {resolvedCloseLabel}
+        </button>
+        <LogoLink
+          logo={menuLogo ?? { src: acgLogoDark, alt: resolvedLogoText }}
+          logoHeight={menuLogoHeight}
+          logoText={resolvedLogoText}
+          reveal={!hideOpenMenuLogo}
+        />
+        <div style={contactSlotStyle}>
+          <GetInTouchButton
+            color={resolvedContactColor}
+            hoverColor={resolvedContactHoverColor}
+            label={resolvedContactLabel}
+            link={contactLink}
+            tone="Olive"
+          />
+        </div>
+      </header>
+      <div ref={scrollerRef} style={getMenuScrollerStyle(openMenuHeaderHeight)}>
+        {repeatedItems.map((item) => (
+          <MenuScrollerItem
+            index={item.visibleIndex}
+            item={item}
+            key={item.key}
+            menuHoverColor={resolvedMenuHoverColor}
+            menuTextColor={resolvedMenuTextColor}
+            onClick={() => setIsMenuOpen(false)}
+            totalItems={items.length}
+          />
+        ))}
+      </div>
+    </div>
+  ) : null
 
   return (
     <>
@@ -275,11 +335,11 @@ export function ACGMenuButton({
             linksJustifyItems={linksJustifyItems}
             linksJustifySelf={linksJustifySelf}
             linkGap={linksGap}
-            linkHoverColor={linksHoverColor}
+            linkHoverColor={resolveColor(linksHoverColor, colorVars.signalOrange)}
             linkStyle={linksStyle}
             menuButtonAlignSelf={menuButtonAlignSelf}
             menuButtonJustifySelf={menuButtonJustifySelf}
-            menuLabel={menuLabel}
+            menuLabel={resolvedMenuLabel}
             onOpen={() => setIsMenuOpen(true)}
             triggerAlignContent={triggerAlignContent}
             triggerAlignItems={triggerAlignItems}
@@ -287,47 +347,11 @@ export function ACGMenuButton({
             triggerJustifyItems={triggerJustifyItems}
           />
         ) : (
-          <MenuTriggerButton label={menuLabel} onClick={() => setIsMenuOpen(true)} style={buttonStyle} />
+          <MenuTriggerButton label={resolvedMenuLabel} onClick={() => setIsMenuOpen(true)} style={buttonStyle} />
         )}
       </div>
 
-      {isMenuOpen ? (
-        <div style={getOverlayStyle(menuBackground)}>
-          <header style={getOverlayHeaderStyle(menuBackground, openMenuHeaderHeight, openMenuHeaderTopPadding)}>
-            <button style={getCloseButtonStyle()} onClick={() => setIsMenuOpen(false)} type="button">
-              {closeLabel}
-            </button>
-            <LogoLink
-              logo={menuLogo ?? { src: acgLogoDark, alt: logoText }}
-              logoHeight={menuLogoHeight}
-              logoText={logoText}
-              reveal={!hideOpenMenuLogo}
-            />
-            <div style={contactSlotStyle}>
-              <GetInTouchButton
-                color={resolvedContactColor}
-                hoverColor={resolvedContactHoverColor}
-                label={contactLabel}
-                link={contactLink}
-                tone="Olive"
-              />
-            </div>
-          </header>
-          <div ref={scrollerRef} style={getMenuScrollerStyle(openMenuHeaderHeight)}>
-            {repeatedItems.map((item) => (
-              <MenuScrollerItem
-                index={item.visibleIndex}
-                item={item}
-                key={item.key}
-                menuHoverColor={menuHoverColor}
-                menuTextColor={menuTextColor}
-                onClick={() => setIsMenuOpen(false)}
-                totalItems={items.length}
-              />
-            ))}
-          </div>
-        </div>
-      ) : null}
+      {overlay ? createPortal(overlay, document.body) : null}
     </>
   )
 }
@@ -337,6 +361,10 @@ function createMenuItem(label: string, link?: ACGMenuButtonLink): MenuItem {
 }
 
 function resolveColor(value: string | undefined, fallback: string) {
+  return value?.trim() || fallback
+}
+
+function resolveText(value: string | undefined, fallback: string) {
   return value?.trim() || fallback
 }
 
