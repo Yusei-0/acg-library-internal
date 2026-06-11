@@ -9,7 +9,19 @@ export const defaultTextColor = `var(--acg-nav-text, ${colorVars.nocturnalForest
 export const defaultMenuTextColor = `var(--acg-nav-menu-text, ${colorVars.nocturnalForest50})`
 export const defaultMenuHoverColor = `var(--acg-nav-menu-hover, ${colorVars.nocturnalForest})`
 
-const navbarHeight = 115
+const defaultNavbarHeight = 115
+const defaultNavbarTopPadding = 28
+const defaultCompactNavbarHeight = 92
+const defaultCompactNavbarTopPadding = 18
+
+function resolvePositiveNumber(value: number | undefined, fallback: number) {
+  return typeof value === 'number' && value > 0 ? value : fallback
+}
+
+function resolveTopPadding(value: number | undefined, fallback: number, height: number) {
+  const resolvedPadding = resolvePositiveNumber(value, fallback)
+  return Math.min(resolvedPadding, Math.max(0, height - 48))
+}
 
 export function getRootStyle(layoutProps: ComponentLayoutProps): CSSProperties {
   return {
@@ -22,37 +34,42 @@ export function getRootStyle(layoutProps: ComponentLayoutProps): CSSProperties {
   }
 }
 
-export function getHeroShellStyle(background: string): CSSProperties {
+export function getHeroShellStyle(background: string, height?: number, topPadding?: number): CSSProperties {
+  const resolvedHeight = resolvePositiveNumber(height, defaultNavbarHeight)
+  const resolvedTopPadding = resolveTopPadding(topPadding, defaultNavbarTopPadding, resolvedHeight)
+
   return {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     background,
     boxSizing: 'border-box',
     display: 'grid',
     gridTemplateColumns: '1fr auto 1fr',
-    height: navbarHeight,
-    minHeight: navbarHeight,
-    padding: '0 28px',
+    height: resolvedHeight,
+    minHeight: resolvedHeight,
+    padding: `${resolvedTopPadding}px 28px 0`,
     width: '100%',
   }
 }
 
-export function getCompactShellStyle(background: string): CSSProperties {
+export function getCompactShellStyle(background: string, height?: number, topPadding?: number): CSSProperties {
+  const resolvedHeight = resolvePositiveNumber(height, defaultCompactNavbarHeight)
+  const resolvedTopPadding = resolveTopPadding(topPadding, defaultCompactNavbarTopPadding, resolvedHeight)
+
   return {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     background,
     boxSizing: 'border-box',
     display: 'grid',
     gridTemplateColumns: '1fr auto 1fr',
-    height: navbarHeight,
-    minHeight: navbarHeight,
-    padding: '0 28px',
+    height: resolvedHeight,
+    minHeight: resolvedHeight,
+    padding: `${resolvedTopPadding}px 28px 0`,
     width: '100%',
   }
 }
 
 export const heroLinksStyle: CSSProperties = {
   alignItems: 'flex-start',
-  alignSelf: 'center',
   display: 'flex',
   flexDirection: 'column',
   gap: 0,
@@ -72,6 +89,32 @@ export function getHeroLinkStyle(color: string): CSSProperties {
     textDecoration: 'none',
     textTransform: 'uppercase',
     whiteSpace: 'nowrap',
+  }
+}
+
+export function getMenuButtonWrapStyle(isCompact: boolean): CSSProperties {
+  return {
+    alignItems: 'center',
+    display: 'flex',
+    gridColumn: 1,
+    gridRow: 1,
+    justifySelf: 'start',
+    opacity: isCompact ? 1 : 0,
+    pointerEvents: isCompact ? 'auto' : 'none',
+    transform: isCompact ? 'translateY(0)' : 'translateY(14px)',
+    transition: 'opacity 240ms ease 90ms, transform 300ms cubic-bezier(0.76, 0, 0.24, 1) 90ms',
+  }
+}
+
+export function getHeroLinksWrapStyle(isCompact: boolean): CSSProperties {
+  return {
+    gridColumn: 1,
+    gridRow: 1,
+    justifySelf: 'start',
+    minWidth: 0,
+    opacity: isCompact ? 0 : 1,
+    transform: isCompact ? 'translateY(-18px)' : 'translateY(0)',
+    transition: 'opacity 260ms ease, transform 320ms cubic-bezier(0.76, 0, 0.24, 1)',
   }
 }
 
@@ -112,20 +155,24 @@ export function getOverlayStyle(background: string): CSSProperties {
   }
 }
 
-export function getOverlayHeaderStyle(background: string): CSSProperties {
+export function getOverlayHeaderStyle(background: string, height?: number, topPadding?: number): CSSProperties {
   return {
-    ...getCompactShellStyle(background),
+    ...getCompactShellStyle(background, height, topPadding),
     position: 'sticky',
     top: 0,
     zIndex: 2,
   }
 }
 
-export const menuScrollerStyle: CSSProperties = {
-  height: 'calc(100svh - 84px)',
-  overflowY: 'auto',
-  padding: '26px 64px 80px',
-  scrollbarWidth: 'none',
+export function getMenuScrollerStyle(headerHeight?: number): CSSProperties {
+  const resolvedHeight = resolvePositiveNumber(headerHeight, defaultNavbarHeight)
+
+  return {
+    height: `calc(100svh - ${resolvedHeight}px)`,
+    overflowY: 'auto',
+    padding: '26px 64px 80px',
+    scrollbarWidth: 'none',
+  }
 }
 
 export const menuItemStyle: CSSProperties = {
@@ -157,6 +204,7 @@ export const logoLinkStyle: CSSProperties = {
   display: 'inline-flex',
   justifySelf: 'center',
   textDecoration: 'none',
+  transition: 'opacity 320ms ease, transform 360ms ease',
 }
 
 export const logoImageStyle: CSSProperties = {

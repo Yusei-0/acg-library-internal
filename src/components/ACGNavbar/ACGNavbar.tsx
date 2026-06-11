@@ -16,7 +16,10 @@ import {
   getCompactShellStyle,
   getHeroLinkStyle,
   getHeroShellStyle,
+  getHeroLinksWrapStyle,
+  getMenuScrollerStyle,
   getMenuButtonStyle,
+  getMenuButtonWrapStyle,
   getOverlayHeaderStyle,
   getOverlayStyle,
   getRootStyle,
@@ -26,7 +29,6 @@ import {
   menuIndexStyle,
   menuItemStyle,
   menuLabelStyle,
-  menuScrollerStyle,
 } from './ACGNavbar.styles'
 
 export interface NavbarLink {
@@ -45,6 +47,15 @@ export interface ACGNavbarProps extends ComponentLayoutProps {
   heroLogo?: NavbarImage
   compactLogo?: NavbarImage
   menuLogo?: NavbarImage
+  hideInitialLogo?: boolean
+  hideScrollLogo?: boolean
+  hideOpenMenuLogo?: boolean
+  initialNavbarHeight?: number
+  scrollNavbarHeight?: number
+  openMenuNavbarHeight?: number
+  initialNavbarTopPadding?: number
+  scrollNavbarTopPadding?: number
+  openMenuNavbarTopPadding?: number
   heroLogoHeight?: number
   compactLogoHeight?: number
   menuLogoHeight?: number
@@ -78,6 +89,7 @@ export interface ACGNavbarProps extends ComponentLayoutProps {
   textColor?: string
   menuTextColor?: string
   menuHoverColor?: string
+  logoRevealScroll?: number
 }
 
 interface MenuItem {
@@ -103,9 +115,15 @@ export function ACGNavbar({
   firstLink = { href: '#what-we-do' },
   fourthLabel = 'ABOUT',
   fourthLink = { href: '#about' },
+  hideInitialLogo = true,
+  hideOpenMenuLogo = false,
+  hideScrollLogo = false,
   heroLogo,
   heroLogoHeight = 39,
+  initialNavbarHeight = 115,
+  initialNavbarTopPadding = 28,
   logoText = 'Logo',
+  logoRevealScroll,
   menuLabel = 'MENU',
   menuBackground = defaultMenuBackground,
   menuHoverColor = defaultMenuHoverColor,
@@ -113,7 +131,11 @@ export function ACGNavbar({
   menuLogoHeight = 39,
   menuTextColor = defaultMenuTextColor,
   navBackground = defaultNavBackground,
+  openMenuNavbarHeight = 115,
+  openMenuNavbarTopPadding = 28,
   scrollThreshold = 24,
+  scrollNavbarHeight = 92,
+  scrollNavbarTopPadding = 18,
   secondLabel = 'HOW WE WORK',
   secondLink = { href: '#how-we-work' },
   textColor = defaultTextColor,
@@ -127,8 +149,10 @@ export function ACGNavbar({
 }: ACGNavbarProps) {
   const [isCompact, setIsCompact] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [hasLogoRevealed, setHasLogoRevealed] = useState(() => !isPositiveNumber(logoRevealScroll))
   const scrollerRef = useRef<HTMLDivElement>(null)
   const compactStateRef = useRef(false)
+  const logoRevealStateRef = useRef(!isPositiveNumber(logoRevealScroll))
 
   const items = useMemo<MenuItem[]>(
     () => [
@@ -175,20 +199,29 @@ export function ACGNavbar({
 
   useEffect(() => {
     const updateState = () => {
+      const currentScroll = window.scrollY
       const shouldCompact = compactStateRef.current
-        ? window.scrollY > Math.max(0, scrollThreshold - 8)
-        : window.scrollY > scrollThreshold + 8
+        ? currentScroll > Math.max(0, scrollThreshold - 8)
+        : currentScroll > scrollThreshold + 8
+      const shouldRevealLogo = isPositiveNumber(logoRevealScroll) ? currentScroll >= (logoRevealScroll ?? 0) : true
 
       if (shouldCompact !== compactStateRef.current) {
         compactStateRef.current = shouldCompact
         setIsCompact(shouldCompact)
       }
+
+      if (shouldRevealLogo !== logoRevealStateRef.current) {
+        logoRevealStateRef.current = shouldRevealLogo
+        setHasLogoRevealed(shouldRevealLogo)
+      }
     }
 
+    logoRevealStateRef.current = !isPositiveNumber(logoRevealScroll)
+    setHasLogoRevealed(!isPositiveNumber(logoRevealScroll))
     updateState()
     window.addEventListener('scroll', updateState, { passive: true })
     return () => window.removeEventListener('scroll', updateState)
-  }, [scrollThreshold])
+  }, [logoRevealScroll, scrollThreshold])
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : ''
@@ -232,22 +265,30 @@ export function ACGNavbar({
   const resolvedContactHoverColor = resolveColor(contactHoverColor, colorVars.signalOrange)
   const resolvedContactOrangeHoverColor = resolveColor(contactOrangeHoverColor, colorVars.petalMist)
   const headerContactHoverColor = isCompact && !isMenuOpen ? resolvedContactHoverColor : resolvedContactOrangeHoverColor
+  const headerLogoHidden = showCompact ? hideScrollLogo : hideInitialLogo
 
   return (
     <>
       <div style={rootStyle}>
-        <header style={showCompact ? getCompactShellStyle(compactBackground) : getHeroShellStyle(navBackground)}>
-          {showCompact ? (
-            <button style={getMenuButtonStyle(textColor)} onClick={() => setIsMenuOpen(true)} type="button">
-              {menuLabel}
-            </button>
-          ) : (
+        <header
+          style={
+            showCompact
+              ? getCompactShellStyle(compactBackground, scrollNavbarHeight, scrollNavbarTopPadding)
+              : getHeroShellStyle(navBackground, initialNavbarHeight, initialNavbarTopPadding)
+          }
+        >
+          <div aria-hidden={showCompact} style={getHeroLinksWrapStyle(showCompact)}>
             <nav aria-label="Main navigation" style={heroLinksStyle}>
               {items.map((item) => (
-                <MenuAnchor item={item} key={item.label} textColor={textColor} />
+                <MenuAnchor item={item} key={item.label} tabIndex={showCompact ? -1 : undefined} textColor={textColor} />
               ))}
             </nav>
-          )}
+          </div>
+          <div style={getMenuButtonWrapStyle(showCompact)}>
+            <button style={getMenuButtonStyle(textColor)} onClick={() => setIsMenuOpen(true)} tabIndex={showCompact ? 0 : -1} type="button">
+              {menuLabel}
+            </button>
+          </div>
 
           <LogoLink
             compactLogo={compactLogo}
@@ -258,6 +299,7 @@ export function ACGNavbar({
             logoText={logoText}
             menuLogo={menuLogo}
             menuLogoHeight={menuLogoHeight}
+            reveal={hasLogoRevealed && !headerLogoHidden}
             showCompact={showCompact}
           />
 
@@ -275,7 +317,7 @@ export function ACGNavbar({
 
       {isMenuOpen ? (
         <div style={getOverlayStyle(menuBackground)}>
-          <header style={getOverlayHeaderStyle(menuBackground)}>
+          <header style={getOverlayHeaderStyle(menuBackground, openMenuNavbarHeight, openMenuNavbarTopPadding)}>
             <button style={getCloseButtonStyle()} onClick={() => setIsMenuOpen(false)} type="button">
               {closeLabel}
             </button>
@@ -288,6 +330,7 @@ export function ACGNavbar({
               logoText={logoText}
               menuLogo={menuLogo}
               menuLogoHeight={menuLogoHeight}
+              reveal={!hideOpenMenuLogo}
               showCompact
             />
             <div style={contactSlotStyle}>
@@ -300,7 +343,7 @@ export function ACGNavbar({
               />
             </div>
           </header>
-          <div ref={scrollerRef} style={menuScrollerStyle}>
+          <div ref={scrollerRef} style={getMenuScrollerStyle(openMenuNavbarHeight)}>
             {repeatedItems.map((item) => (
               <MenuScrollerItem
                 index={item.visibleIndex}
@@ -327,12 +370,17 @@ function resolveColor(value: string | undefined, fallback: string) {
   return value?.trim() || fallback
 }
 
-function MenuAnchor({ item, textColor }: { item: MenuItem; textColor: string }) {
+function isPositiveNumber(value: number | undefined) {
+  return typeof value === 'number' && value > 0
+}
+
+function MenuAnchor({ item, tabIndex, textColor }: { item: MenuItem; tabIndex: number | undefined; textColor: string }) {
   return (
     <a
       href={item.link?.href}
       rel={item.link?.target === '_blank' ? 'noreferrer' : undefined}
       style={getHeroLinkStyle(textColor)}
+      tabIndex={tabIndex}
       target={item.link?.target}
     >
       {item.label}
@@ -349,6 +397,7 @@ function LogoLink({
   logoText,
   menuLogo,
   menuLogoHeight,
+  reveal,
   showCompact,
 }: {
   compactLogo: NavbarImage | undefined
@@ -359,6 +408,7 @@ function LogoLink({
   logoText: string
   menuLogo: NavbarImage | undefined
   menuLogoHeight: number
+  reveal: boolean
   showCompact: boolean
 }) {
   const logo = isOverlay
@@ -367,8 +417,15 @@ function LogoLink({
       ? { height: compactLogoHeight, image: compactLogo ?? { src: acgLogoPrincipal, alt: logoText } }
       : { height: heroLogoHeight, image: heroLogo ?? { src: acgLogoDark, alt: logoText } }
 
+  const revealStyle = {
+    ...logoLinkStyle,
+    opacity: reveal ? 1 : 0,
+    pointerEvents: reveal ? 'auto' : 'none',
+    transform: reveal ? 'translateY(0)' : 'translateY(-8px)',
+  } as const
+
   return (
-    <a aria-label={logoText} href="#top" style={logoLinkStyle}>
+    <a aria-label={logoText} href="#top" style={revealStyle}>
       <img alt={logo.image.alt ?? ''} src={logo.image.src} style={{ ...logoImageStyle, height: logo.height }} />
     </a>
   )

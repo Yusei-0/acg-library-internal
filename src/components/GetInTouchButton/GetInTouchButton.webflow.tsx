@@ -24,7 +24,7 @@ export default declareComponent(GetInTouchButton, {
     }),
     tone: props.Variant({
       name: 'Tone',
-      options: ['Olive', 'Olive Light Hover', 'Orange', 'Light'],
+      options: ['Olive', 'Olive Light Hover', 'Orange', 'Light', 'Auto'],
       defaultValue: 'Olive',
       group: 'Style',
     }),

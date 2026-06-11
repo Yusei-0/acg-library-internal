@@ -142,6 +142,99 @@ h2 {
   display: none;
 }
 
+.full-width-exit-button {
+  align-items: center;
+  background: var(--acg-color-nocturnal-forest);
+  border: 1px solid var(--acg-color-nocturnal-forest);
+  border-radius: 8px;
+  bottom: 18px;
+  color: var(--acg-color-petal-mist);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  height: 42px;
+  justify-content: center;
+  left: 18px;
+  padding: 0 16px;
+  position: fixed;
+  text-transform: uppercase;
+  z-index: 120;
+}
+
+.full-width-exit-button:hover {
+  background: var(--acg-color-signal-orange);
+  color: var(--acg-color-nocturnal-forest);
+}
+
+.full-width-control-panel {
+  background: rgba(249, 240, 237, 0.94);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
+  border-radius: 8px;
+  box-shadow: 0 18px 50px rgba(21, 35, 4, 0.16);
+  max-height: calc(100svh - 156px);
+  max-width: min(860px, calc(100vw - 36px));
+  overflow: hidden;
+  position: fixed;
+  right: 18px;
+  top: 132px;
+  width: min(860px, calc(100vw - 36px));
+  z-index: 70;
+}
+
+.full-width-control-panel summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  list-style: none;
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+.full-width-control-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.full-width-control-panel summary span {
+  color: var(--acg-color-nocturnal-forest);
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.full-width-control-panel summary strong {
+  color: var(--acg-color-nocturnal-forest-50);
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.full-width-control-body {
+  border-top: 1px solid var(--acg-color-nocturnal-forest-30);
+  display: grid;
+  gap: 14px;
+  max-height: calc(100svh - 206px);
+  overflow: auto;
+  padding: 14px;
+}
+
+.metric-output {
+  align-items: center;
+  background: var(--acg-color-petal-mist);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
+  border-radius: 6px;
+  color: var(--acg-color-nocturnal-forest);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 900;
+  min-height: 34px;
+  min-width: 92px;
+  padding: 0 10px;
+}
+
 .stage-header {
   align-items: center;
   display: flex;
@@ -218,6 +311,30 @@ h2 {
   gap: 8px;
 }
 
+.control-section {
+  display: grid;
+  gap: 10px;
+}
+
+.control-section h3 {
+  color: var(--acg-color-nocturnal-forest);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.control-section-grid {
+  align-items: end;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.link-control-pair {
+  display: contents;
+}
+
 .control-group > span {
   color: var(--acg-color-nocturnal-forest-50);
   font-size: 12px;
@@ -264,6 +381,47 @@ h2 {
   min-height: 34px;
   padding: 0 10px;
   width: 92px;
+}
+
+.text-control,
+.select-control {
+  background: var(--acg-color-petal-mist);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
+  border-radius: 6px;
+  color: var(--acg-color-nocturnal-forest);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  min-height: 34px;
+  min-width: 0;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.select-control {
+  cursor: pointer;
+}
+
+.boolean-control {
+  align-items: center;
+  background: var(--acg-color-petal-mist);
+  border: 1px solid var(--acg-color-nocturnal-forest-30);
+  border-radius: 6px;
+  color: var(--acg-color-nocturnal-forest);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 900;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 10px;
+}
+
+.boolean-control input {
+  accent-color: var(--acg-color-nocturnal-forest);
+  height: 14px;
+  margin: 0;
+  width: 14px;
 }
 
 .quiet-note {
@@ -416,5 +574,23 @@ h2 {
 
   .full-width-stage .control-band {
     width: auto;
+  }
+
+  .full-width-control-panel {
+    bottom: 72px;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    width: auto;
+    max-height: min(70svh, 620px);
+  }
+
+  .full-width-control-body {
+    max-height: calc(min(70svh, 620px) - 48px);
+  }
+
+  .full-width-exit-button {
+    bottom: 16px;
+    left: 12px;
   }
 }

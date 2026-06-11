@@ -20,6 +20,10 @@ export const toneStyles: Record<GetInTouchButtonTone, { color: string; hoverColo
     color: colorVars.petalMist,
     hoverColor: colorVars.nocturnalForest,
   },
+  Auto: {
+    color: colorVars.nocturnalForest,
+    hoverColor: colorVars.signalOrange,
+  },
 }
 
 interface ButtonSizeStyle {
