@@ -3,7 +3,7 @@ export type { ArrowButtonLink, ArrowButtonProps } from './ArrowButton/ArrowButto
 export { ACGFooter } from './ACGFooter/ACGFooter'
 export type { ACGFooterProps, FooterLink } from './ACGFooter/ACGFooter'
 export { ACGMenuButton } from './ACGMenuButton/ACGMenuButton'
-export type { ACGMenuButtonLink, ACGMenuButtonProps } from './ACGMenuButton/ACGMenuButton'
+export type { ACGMenuButtonLink, ACGMenuButtonProps, ACGMenuButtonVariant } from './ACGMenuButton/ACGMenuButton'
 export { GetInTouchButton } from './GetInTouchButton/GetInTouchButton'
 export type {
   GetInTouchButtonLink,

@@ -33,7 +33,15 @@ export interface ACGMenuButtonImage {
   alt?: string
 }
 
+export type ACGMenuButtonVariant = 'Button' | 'Links To Button'
+
 export interface ACGMenuButtonProps extends ComponentLayoutProps {
+  variant?: ACGMenuButtonVariant
+  scrollTrigger?: number
+  triggerAlignItems?: string
+  triggerJustifyItems?: string
+  triggerAlignContent?: string
+  triggerJustifyContent?: string
   logoText?: string
   menuLogo?: ACGMenuButtonImage
   menuLogoHeight?: number
@@ -54,6 +62,28 @@ export interface ACGMenuButtonProps extends ComponentLayoutProps {
   fourthLink?: ACGMenuButtonLink
   menuBackground?: string
   textColor?: string
+  menuButtonHoverColor?: string
+  menuButtonFontFamily?: string
+  menuButtonFontSize?: number
+  menuButtonFontWeight?: number
+  menuButtonLineHeight?: number
+  menuButtonLetterSpacing?: string
+  menuButtonTextTransform?: string
+  menuButtonAlignSelf?: string
+  menuButtonJustifySelf?: string
+  linksColor?: string
+  linksHoverColor?: string
+  linksFontFamily?: string
+  linksFontSize?: number
+  linksFontWeight?: number
+  linksLetterSpacing?: string
+  linksLineHeight?: number
+  linksTextTransform?: string
+  linksGap?: number
+  linksAlignItems?: string
+  linksJustifyItems?: string
+  linksAlignSelf?: string
+  linksJustifySelf?: string
   menuTextColor?: string
   menuHoverColor?: string
   openMenuHeaderHeight?: number
@@ -76,8 +106,30 @@ export function ACGMenuButton({
   fourthLabel = 'ABOUT',
   fourthLink = { href: '#about' },
   hideOpenMenuLogo = false,
+  linksAlignItems = 'start',
+  linksAlignSelf = 'start',
+  linksColor = colorVars.nocturnalForest,
+  linksFontFamily,
+  linksFontSize = 14,
+  linksFontWeight = 800,
+  linksGap = 0,
+  linksHoverColor = colorVars.signalOrange,
+  linksLetterSpacing = '-0.06em',
+  linksLineHeight = 1,
+  linksJustifyItems = 'start',
+  linksJustifySelf = 'start',
+  linksTextTransform = 'uppercase',
   logoText = 'Logo',
   menuBackground = defaultMenuBackground,
+  menuButtonAlignSelf = 'start',
+  menuButtonFontFamily,
+  menuButtonFontSize = 16,
+  menuButtonFontWeight = 900,
+  menuButtonHoverColor,
+  menuButtonLetterSpacing = '0',
+  menuButtonLineHeight = 1,
+  menuButtonJustifySelf = 'start',
+  menuButtonTextTransform = 'none',
   menuHoverColor = defaultMenuHoverColor,
   menuLabel = 'MENU',
   menuLogo,
@@ -87,12 +139,19 @@ export function ACGMenuButton({
   openMenuHeaderTopPadding = 28,
   secondLabel = 'HOW WE WORK',
   secondLink = { href: '#how-we-work' },
+  scrollTrigger = 24,
   textColor = defaultTextColor,
   thirdLabel = 'WORK',
   thirdLink = { href: '#work' },
+  triggerAlignContent = 'start',
+  triggerAlignItems = 'start',
+  triggerJustifyContent = 'start',
+  triggerJustifyItems = 'start',
+  variant = 'Button',
   ...layoutProps
 }: ACGMenuButtonProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [hasTriggered, setHasTriggered] = useState(false)
   const scrollerRef = useRef<HTMLDivElement>(null)
 
   const items = useMemo<MenuItem[]>(
@@ -117,6 +176,25 @@ export function ACGMenuButton({
       ).flat(),
     [items],
   )
+
+  useEffect(() => {
+    if (variant !== 'Links To Button') {
+      setHasTriggered(false)
+      return
+    }
+
+    const updateState = () => {
+      setHasTriggered(window.scrollY >= Math.max(0, scrollTrigger))
+    }
+
+    updateState()
+    window.addEventListener('scroll', updateState, { passive: true })
+    window.addEventListener('resize', updateState)
+    return () => {
+      window.removeEventListener('scroll', updateState)
+      window.removeEventListener('resize', updateState)
+    }
+  }, [scrollTrigger, variant])
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : ''
@@ -155,19 +233,62 @@ export function ACGMenuButton({
   }, [isMenuOpen])
 
   const rootStyle: CSSProperties = {
-    alignItems: 'center',
-    display: 'inline-flex',
+    alignItems: 'flex-start',
+    display: variant === 'Links To Button' ? 'inline-grid' : 'inline-flex',
+    justifyItems: 'start',
+    minWidth: 0,
+    position: 'relative',
     ...getLayoutStyles(layoutProps),
   }
   const resolvedContactColor = resolveColor(contactColor, colorVars.nocturnalForest)
   const resolvedContactHoverColor = resolveColor(contactHoverColor, colorVars.petalMist)
+  const buttonStyle = getStyledMenuButtonStyle({
+    color: textColor,
+    fontFamily: menuButtonFontFamily,
+    fontSize: menuButtonFontSize,
+    fontWeight: menuButtonFontWeight,
+    hoverColor: menuButtonHoverColor,
+    letterSpacing: menuButtonLetterSpacing,
+    lineHeight: menuButtonLineHeight,
+    textTransform: menuButtonTextTransform,
+  })
+  const linksStyle = getAnimatedLinksStyle({
+    color: linksColor,
+    fontFamily: linksFontFamily,
+    fontSize: linksFontSize,
+    fontWeight: linksFontWeight,
+    letterSpacing: linksLetterSpacing,
+    lineHeight: linksLineHeight,
+    textTransform: linksTextTransform,
+  })
 
   return (
     <>
       <div style={rootStyle}>
-        <button style={getMenuButtonStyle(textColor)} onClick={() => setIsMenuOpen(true)} type="button">
-          {menuLabel}
-        </button>
+        {variant === 'Links To Button' ? (
+          <AnimatedLinksTrigger
+            buttonStyle={buttonStyle}
+            hasTriggered={hasTriggered}
+            items={items}
+            linksAlignItems={linksAlignItems}
+            linksAlignSelf={linksAlignSelf}
+            linksJustifyItems={linksJustifyItems}
+            linksJustifySelf={linksJustifySelf}
+            linkGap={linksGap}
+            linkHoverColor={linksHoverColor}
+            linkStyle={linksStyle}
+            menuButtonAlignSelf={menuButtonAlignSelf}
+            menuButtonJustifySelf={menuButtonJustifySelf}
+            menuLabel={menuLabel}
+            onOpen={() => setIsMenuOpen(true)}
+            triggerAlignContent={triggerAlignContent}
+            triggerAlignItems={triggerAlignItems}
+            triggerJustifyContent={triggerJustifyContent}
+            triggerJustifyItems={triggerJustifyItems}
+          />
+        ) : (
+          <MenuTriggerButton label={menuLabel} onClick={() => setIsMenuOpen(true)} style={buttonStyle} />
+        )}
       </div>
 
       {isMenuOpen ? (
@@ -217,6 +338,192 @@ function createMenuItem(label: string, link?: ACGMenuButtonLink): MenuItem {
 
 function resolveColor(value: string | undefined, fallback: string) {
   return value?.trim() || fallback
+}
+
+function getStyledMenuButtonStyle({
+  color,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  hoverColor,
+  letterSpacing,
+  lineHeight,
+  textTransform,
+}: {
+  color: string
+  fontFamily: string | undefined
+  fontSize: number
+  fontWeight: number
+  hoverColor: string | undefined
+  letterSpacing: string
+  lineHeight: number
+  textTransform: string
+}) {
+  return {
+    ...getMenuButtonStyle(color),
+    fontFamily: fontFamily?.trim() || 'inherit',
+    fontSize,
+    fontWeight,
+    letterSpacing,
+    lineHeight,
+    textTransform,
+    '--acg-menu-button-color': color,
+    '--acg-menu-button-hover-color': hoverColor?.trim() || color,
+  } as CSSProperties
+}
+
+function getAnimatedLinksStyle({
+  color,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  letterSpacing,
+  lineHeight,
+  textTransform,
+}: {
+  color: string
+  fontFamily: string | undefined
+  fontSize: number
+  fontWeight: number
+  letterSpacing: string
+  lineHeight: number
+  textTransform: string
+}) {
+  return {
+    color,
+    fontFamily: fontFamily?.trim() || 'inherit',
+    fontSize,
+    fontWeight,
+    letterSpacing,
+    lineHeight,
+    textDecoration: 'none',
+    textTransform,
+    whiteSpace: 'nowrap',
+  } as CSSProperties
+}
+
+function MenuTriggerButton({ label, onClick, style }: { label: string; onClick: () => void; style: CSSProperties }) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        ...style,
+        color: isHovered ? 'var(--acg-menu-button-hover-color)' : 'var(--acg-menu-button-color)',
+        transition: 'color 160ms ease, opacity 220ms ease, transform 320ms cubic-bezier(0.76, 0, 0.24, 1)',
+      }}
+      type="button"
+    >
+      {label}
+    </button>
+  )
+}
+
+function AnimatedLinksTrigger({
+  buttonStyle,
+  hasTriggered,
+  items,
+  linksAlignItems,
+  linksAlignSelf,
+  linksJustifyItems,
+  linksJustifySelf,
+  linkGap,
+  linkHoverColor,
+  linkStyle,
+  menuButtonAlignSelf,
+  menuButtonJustifySelf,
+  menuLabel,
+  onOpen,
+  triggerAlignContent,
+  triggerAlignItems,
+  triggerJustifyContent,
+  triggerJustifyItems,
+}: {
+  buttonStyle: CSSProperties
+  hasTriggered: boolean
+  items: MenuItem[]
+  linksAlignItems: string
+  linksAlignSelf: string
+  linksJustifyItems: string
+  linksJustifySelf: string
+  linkGap: number
+  linkHoverColor: string
+  linkStyle: CSSProperties
+  menuButtonAlignSelf: string
+  menuButtonJustifySelf: string
+  menuLabel: string
+  onOpen: () => void
+  triggerAlignContent: string
+  triggerAlignItems: string
+  triggerJustifyContent: string
+  triggerJustifyItems: string
+}) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
+  return (
+    <div
+      style={{
+        alignContent: triggerAlignContent,
+        alignItems: triggerAlignItems,
+        display: 'grid',
+        justifyContent: triggerJustifyContent,
+        justifyItems: triggerJustifyItems,
+        position: 'relative',
+      }}
+    >
+      <div
+        aria-hidden={hasTriggered}
+        style={{
+          alignItems: linksAlignItems,
+          alignSelf: linksAlignSelf,
+          display: 'grid',
+          gap: linkGap,
+          justifyItems: linksJustifyItems,
+          justifySelf: linksJustifySelf,
+          opacity: hasTriggered ? 0 : 1,
+          pointerEvents: hasTriggered ? 'none' : 'auto',
+          transition: 'opacity 180ms ease 320ms',
+        }}
+      >
+        {items.map((item, index) => (
+          <a
+            href={item.link?.href}
+            key={item.label}
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+            rel={item.link?.target === '_blank' ? 'noreferrer' : undefined}
+            style={{
+              ...linkStyle,
+              color: hoveredIndex === index ? linkHoverColor : linkStyle.color,
+              transform: hasTriggered ? `translateY(calc(-100% * ${index} - ${linkGap * index}px))` : 'translateY(0)',
+              transition:
+                'color 140ms ease, opacity 180ms ease 320ms, transform 420ms cubic-bezier(0.76, 0, 0.24, 1)',
+            }}
+            target={item.link?.target}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+      <div
+        style={{
+          left: 0,
+          opacity: hasTriggered ? 1 : 0,
+          pointerEvents: hasTriggered ? 'auto' : 'none',
+          position: 'absolute',
+          top: 0,
+          alignSelf: menuButtonAlignSelf,
+          justifySelf: menuButtonJustifySelf,
+          transition: 'opacity 180ms ease 430ms',
+        }}
+      >
+        <MenuTriggerButton label={menuLabel} onClick={onOpen} style={buttonStyle} />
+      </div>
+    </div>
+  )
 }
 
 function LogoLink({

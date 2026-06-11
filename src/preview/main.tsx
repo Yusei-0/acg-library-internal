@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ACGFooter, ACGMenuButton, ACGNavbar, ArrowButton, GetInTouchButton, MarqueeTitle, ProjectCard } from '../components'
 import type {
+  ACGMenuButtonVariant,
   GetInTouchButtonSize,
   GetInTouchButtonTone,
   MarqueeTitleDirection,
@@ -14,6 +15,7 @@ type ComponentKey = 'navbar' | 'menuButton' | 'footer' | 'arrowButton' | 'getInT
 type CanvasMode = 'Contained' | 'Full width'
 type LayoutDirectionControl = '' | 'Row' | 'Column'
 type LayoutAlignmentControl = '' | 'Start' | 'Center' | 'End' | 'Stretch'
+type TextTransformControl = 'none' | 'uppercase' | 'lowercase' | 'capitalize'
 
 interface NavbarPreviewControls {
   logoText: string
@@ -94,6 +96,70 @@ type UpdateNavbarControl = <Key extends keyof NavbarPreviewControls>(
   value: NavbarPreviewControls[Key],
 ) => void
 
+interface MenuButtonPreviewControls {
+  variant: ACGMenuButtonVariant
+  scrollTrigger: number
+  triggerAlignItems: string
+  triggerJustifyItems: string
+  triggerAlignContent: string
+  triggerJustifyContent: string
+  logoText: string
+  menuLogoUrl: string
+  menuLogoHeight: number
+  hideOpenMenuLogo: boolean
+  contactLabel: string
+  contactHref: string
+  contactColor: string
+  contactHoverColor: string
+  menuLabel: string
+  closeLabel: string
+  firstLabel: string
+  firstHref: string
+  secondLabel: string
+  secondHref: string
+  thirdLabel: string
+  thirdHref: string
+  fourthLabel: string
+  fourthHref: string
+  menuBackground: string
+  textColor: string
+  menuButtonHoverColor: string
+  menuButtonFontFamily: string
+  menuButtonFontSize: number
+  menuButtonFontWeight: number
+  menuButtonLineHeight: number
+  menuButtonLetterSpacing: string
+  menuButtonTextTransform: TextTransformControl
+  menuButtonAlignSelf: string
+  menuButtonJustifySelf: string
+  linksColor: string
+  linksHoverColor: string
+  linksFontFamily: string
+  linksFontSize: number
+  linksFontWeight: number
+  linksLetterSpacing: string
+  linksLineHeight: number
+  linksTextTransform: TextTransformControl
+  linksGap: number
+  linksAlignItems: string
+  linksJustifyItems: string
+  linksAlignSelf: string
+  linksJustifySelf: string
+  menuTextColor: string
+  menuHoverColor: string
+  openMenuHeaderHeight: number
+  openMenuHeaderTopPadding: number
+}
+
+type MenuButtonStringControlKey = {
+  [Key in keyof MenuButtonPreviewControls]: MenuButtonPreviewControls[Key] extends string ? Key : never
+}[keyof MenuButtonPreviewControls]
+
+type UpdateMenuButtonControl = <Key extends keyof MenuButtonPreviewControls>(
+  key: Key,
+  value: MenuButtonPreviewControls[Key],
+) => void
+
 const componentTabs: Array<{ key: ComponentKey; label: string }> = [
   { key: 'navbar', label: 'ACG Navbar' },
   { key: 'menuButton', label: 'ACG Menu Button' },
@@ -170,6 +236,61 @@ const defaultNavbarPreviewControls: NavbarPreviewControls = {
   verticalAlignment: '',
 }
 
+const defaultMenuButtonPreviewControls: MenuButtonPreviewControls = {
+  variant: 'Links To Button',
+  scrollTrigger: 120,
+  triggerAlignItems: 'start',
+  triggerJustifyItems: 'start',
+  triggerAlignContent: 'start',
+  triggerJustifyContent: 'start',
+  logoText: 'ACG',
+  menuLogoUrl: '',
+  menuLogoHeight: 39,
+  hideOpenMenuLogo: false,
+  contactLabel: 'GET IN TOUCH',
+  contactHref: '#contact',
+  contactColor: 'var(--acg-color-nocturnal-forest, #152304)',
+  contactHoverColor: 'var(--acg-color-petal-mist, #F9F0ED)',
+  menuLabel: 'MENU',
+  closeLabel: 'CLOSE',
+  firstLabel: 'WHAT WE DO',
+  firstHref: '#strategy',
+  secondLabel: 'HOW WE WORK',
+  secondHref: '#systems',
+  thirdLabel: 'WORK',
+  thirdHref: '#work',
+  fourthLabel: 'ABOUT',
+  fourthHref: '#studio',
+  menuBackground: 'var(--acg-nav-menu-background, var(--acg-nav-background, var(--acg-color-signal-orange, #FF5A00)))',
+  textColor: 'var(--acg-color-nocturnal-forest, #152304)',
+  menuButtonHoverColor: 'var(--acg-color-signal-orange, #FF5A00)',
+  menuButtonFontFamily: '',
+  menuButtonFontSize: 16,
+  menuButtonFontWeight: 900,
+  menuButtonLineHeight: 1,
+  menuButtonLetterSpacing: '0',
+  menuButtonTextTransform: 'none',
+  menuButtonAlignSelf: 'start',
+  menuButtonJustifySelf: 'start',
+  linksColor: 'var(--acg-color-nocturnal-forest, #152304)',
+  linksHoverColor: 'var(--acg-color-signal-orange, #FF5A00)',
+  linksFontFamily: '',
+  linksFontSize: 14,
+  linksFontWeight: 800,
+  linksLetterSpacing: '-0.06em',
+  linksLineHeight: 1,
+  linksTextTransform: 'uppercase',
+  linksGap: 0,
+  linksAlignItems: 'start',
+  linksJustifyItems: 'start',
+  linksAlignSelf: 'start',
+  linksJustifySelf: 'start',
+  menuTextColor: 'var(--acg-nav-menu-text, var(--acg-color-nocturnal-forest-50, rgba(21, 35, 4, 0.5)))',
+  menuHoverColor: 'var(--acg-nav-menu-hover, var(--acg-color-nocturnal-forest, #152304))',
+  openMenuHeaderHeight: 115,
+  openMenuHeaderTopPadding: 28,
+}
+
 function PreviewApp() {
   const [activeComponent, setActiveComponent] = useState<ComponentKey>('navbar')
   const [arrowAngle, setArrowAngle] = useState(0)
@@ -178,6 +299,7 @@ function PreviewApp() {
   const [getInTouchSize, setGetInTouchSize] = useState<GetInTouchButtonSize>('Normal')
   const [getInTouchTone, setGetInTouchTone] = useState<GetInTouchButtonTone>('Olive')
   const [navbarControls, setNavbarControls] = useState<NavbarPreviewControls>(defaultNavbarPreviewControls)
+  const [menuButtonControls, setMenuButtonControls] = useState<MenuButtonPreviewControls>(defaultMenuButtonPreviewControls)
   const [pageScrollPosition, setPageScrollPosition] = useState(0)
   const [pageScrollTotal, setPageScrollTotal] = useState(0)
   const [marqueeDirection, setMarqueeDirection] = useState<MarqueeTitleDirection>('Left')
@@ -200,7 +322,7 @@ function PreviewApp() {
   }, [isFullWidth])
 
   useEffect(() => {
-    if (!isFullWidth || activeComponent !== 'navbar') return
+    if (!isFullWidth || (activeComponent !== 'navbar' && activeComponent !== 'menuButton')) return
 
     const updateScrollMetrics = () => {
       const total = Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
@@ -228,6 +350,16 @@ function PreviewApp() {
     value: NavbarPreviewControls[Key],
   ) => {
     setNavbarControls((currentControls) => ({
+      ...currentControls,
+      [key]: value,
+    }))
+  }
+
+  const updateMenuButtonControl = <Key extends keyof MenuButtonPreviewControls>(
+    key: Key,
+    value: MenuButtonPreviewControls[Key],
+  ) => {
+    setMenuButtonControls((currentControls) => ({
       ...currentControls,
       [key]: value,
     }))
@@ -402,6 +534,238 @@ function PreviewApp() {
         </details>
       ) : null}
 
+      {isFullWidth && activeComponent === 'menuButton' ? (
+        <details className="full-width-control-panel" open>
+          <summary>
+            <span>Menu button inputs</span>
+            <strong>{pageScrollPosition}px scrolled</strong>
+          </summary>
+
+          <div className="full-width-control-body" aria-label="Menu button full width controls">
+            <ControlSection title="Behavior">
+              <ControlGroup label="Variant">
+                <SegmentedControl
+                  options={['Button', 'Links To Button']}
+                  value={menuButtonControls.variant}
+                  onChange={(value) => updateMenuButtonControl('variant', value as ACGMenuButtonVariant)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Scroll Trigger">
+                <NumberControl
+                  max={Math.max(5000, pageScrollTotal)}
+                  min={0}
+                  step={10}
+                  value={menuButtonControls.scrollTrigger}
+                  onChange={(value) => updateMenuButtonControl('scrollTrigger', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Scrolled">
+                <NumberControl max={Math.max(1, pageScrollTotal)} min={0} step={10} value={pageScrollPosition} onChange={updatePageScrollPosition} />
+              </ControlGroup>
+              <ControlGroup label="Scroll Total">
+                <output className="metric-output">{pageScrollTotal}px</output>
+              </ControlGroup>
+            </ControlSection>
+
+            <ControlSection title="Alignment">
+              <ControlGroup label="Trigger Align Items">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.triggerAlignItems}
+                  onChange={(value) => updateMenuButtonControl('triggerAlignItems', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Trigger Justify Items">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.triggerJustifyItems}
+                  onChange={(value) => updateMenuButtonControl('triggerJustifyItems', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Trigger Align Content">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch', 'space-between']}
+                  value={menuButtonControls.triggerAlignContent}
+                  onChange={(value) => updateMenuButtonControl('triggerAlignContent', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Trigger Justify Content">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch', 'space-between']}
+                  value={menuButtonControls.triggerJustifyContent}
+                  onChange={(value) => updateMenuButtonControl('triggerJustifyContent', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Button Align Self">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.menuButtonAlignSelf}
+                  onChange={(value) => updateMenuButtonControl('menuButtonAlignSelf', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Button Justify Self">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.menuButtonJustifySelf}
+                  onChange={(value) => updateMenuButtonControl('menuButtonJustifySelf', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Links Align Items">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.linksAlignItems}
+                  onChange={(value) => updateMenuButtonControl('linksAlignItems', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Links Justify Items">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.linksJustifyItems}
+                  onChange={(value) => updateMenuButtonControl('linksJustifyItems', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Links Align Self">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.linksAlignSelf}
+                  onChange={(value) => updateMenuButtonControl('linksAlignSelf', value)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Links Justify Self">
+                <SelectControl
+                  options={['start', 'center', 'end', 'stretch']}
+                  value={menuButtonControls.linksJustifySelf}
+                  onChange={(value) => updateMenuButtonControl('linksJustifySelf', value)}
+                />
+              </ControlGroup>
+            </ControlSection>
+
+            <ControlSection title="Header">
+              <ControlGroup label="Logo Text">
+                <TextControl value={menuButtonControls.logoText} onChange={(value) => updateMenuButtonControl('logoText', value)} />
+              </ControlGroup>
+              <ControlGroup label="Menu Logo URL">
+                <TextControl value={menuButtonControls.menuLogoUrl} onChange={(value) => updateMenuButtonControl('menuLogoUrl', value)} />
+              </ControlGroup>
+              <ControlGroup label="Logo Height">
+                <NumberControl max={160} min={8} value={menuButtonControls.menuLogoHeight} onChange={(value) => updateMenuButtonControl('menuLogoHeight', value)} />
+              </ControlGroup>
+              <ControlGroup label="Show Logo">
+                <BooleanControl checked={!menuButtonControls.hideOpenMenuLogo} label="Show" onChange={(checked) => updateMenuButtonControl('hideOpenMenuLogo', !checked)} />
+              </ControlGroup>
+              <ControlGroup label="Contact Label">
+                <TextControl value={menuButtonControls.contactLabel} onChange={(value) => updateMenuButtonControl('contactLabel', value)} />
+              </ControlGroup>
+              <ControlGroup label="Contact Link">
+                <TextControl value={menuButtonControls.contactHref} onChange={(value) => updateMenuButtonControl('contactHref', value)} />
+              </ControlGroup>
+              <ControlGroup label="Contact Color">
+                <TextControl value={menuButtonControls.contactColor} onChange={(value) => updateMenuButtonControl('contactColor', value)} />
+              </ControlGroup>
+              <ControlGroup label="Contact Hover">
+                <TextControl value={menuButtonControls.contactHoverColor} onChange={(value) => updateMenuButtonControl('contactHoverColor', value)} />
+              </ControlGroup>
+            </ControlSection>
+
+            <ControlSection title="Links">
+              <MenuButtonLinkControls hrefKey="firstHref" labelKey="firstLabel" labelNumber="First" menuButtonControls={menuButtonControls} updateMenuButtonControl={updateMenuButtonControl} />
+              <MenuButtonLinkControls hrefKey="secondHref" labelKey="secondLabel" labelNumber="Second" menuButtonControls={menuButtonControls} updateMenuButtonControl={updateMenuButtonControl} />
+              <MenuButtonLinkControls hrefKey="thirdHref" labelKey="thirdLabel" labelNumber="Third" menuButtonControls={menuButtonControls} updateMenuButtonControl={updateMenuButtonControl} />
+              <MenuButtonLinkControls hrefKey="fourthHref" labelKey="fourthLabel" labelNumber="Fourth" menuButtonControls={menuButtonControls} updateMenuButtonControl={updateMenuButtonControl} />
+            </ControlSection>
+
+            <ControlSection title="Button Style">
+              <ControlGroup label="Menu Label">
+                <TextControl value={menuButtonControls.menuLabel} onChange={(value) => updateMenuButtonControl('menuLabel', value)} />
+              </ControlGroup>
+              <ControlGroup label="Close Label">
+                <TextControl value={menuButtonControls.closeLabel} onChange={(value) => updateMenuButtonControl('closeLabel', value)} />
+              </ControlGroup>
+              <ControlGroup label="Color">
+                <TextControl value={menuButtonControls.textColor} onChange={(value) => updateMenuButtonControl('textColor', value)} />
+              </ControlGroup>
+              <ControlGroup label="Hover Color">
+                <TextControl value={menuButtonControls.menuButtonHoverColor} onChange={(value) => updateMenuButtonControl('menuButtonHoverColor', value)} />
+              </ControlGroup>
+              <ControlGroup label="Font Family">
+                <TextControl value={menuButtonControls.menuButtonFontFamily} onChange={(value) => updateMenuButtonControl('menuButtonFontFamily', value)} />
+              </ControlGroup>
+              <ControlGroup label="Font Size">
+                <NumberControl max={96} min={8} value={menuButtonControls.menuButtonFontSize} onChange={(value) => updateMenuButtonControl('menuButtonFontSize', value)} />
+              </ControlGroup>
+              <ControlGroup label="Font Weight">
+                <NumberControl max={1000} min={100} step={100} value={menuButtonControls.menuButtonFontWeight} onChange={(value) => updateMenuButtonControl('menuButtonFontWeight', value)} />
+              </ControlGroup>
+              <ControlGroup label="Line Height">
+                <NumberControl max={3} min={0.7} step={0.05} value={menuButtonControls.menuButtonLineHeight} onChange={(value) => updateMenuButtonControl('menuButtonLineHeight', value)} />
+              </ControlGroup>
+              <ControlGroup label="Letter Spacing">
+                <TextControl value={menuButtonControls.menuButtonLetterSpacing} onChange={(value) => updateMenuButtonControl('menuButtonLetterSpacing', value)} />
+              </ControlGroup>
+              <ControlGroup label="Transform">
+                <SelectControl
+                  options={['none', 'uppercase', 'lowercase', 'capitalize']}
+                  value={menuButtonControls.menuButtonTextTransform}
+                  onChange={(value) => updateMenuButtonControl('menuButtonTextTransform', value as TextTransformControl)}
+                />
+              </ControlGroup>
+            </ControlSection>
+
+            <ControlSection title="Initial Links Style">
+              <ControlGroup label="Color">
+                <TextControl value={menuButtonControls.linksColor} onChange={(value) => updateMenuButtonControl('linksColor', value)} />
+              </ControlGroup>
+              <ControlGroup label="Hover Color">
+                <TextControl value={menuButtonControls.linksHoverColor} onChange={(value) => updateMenuButtonControl('linksHoverColor', value)} />
+              </ControlGroup>
+              <ControlGroup label="Font Family">
+                <TextControl value={menuButtonControls.linksFontFamily} onChange={(value) => updateMenuButtonControl('linksFontFamily', value)} />
+              </ControlGroup>
+              <ControlGroup label="Font Size">
+                <NumberControl max={96} min={8} value={menuButtonControls.linksFontSize} onChange={(value) => updateMenuButtonControl('linksFontSize', value)} />
+              </ControlGroup>
+              <ControlGroup label="Font Weight">
+                <NumberControl max={1000} min={100} step={100} value={menuButtonControls.linksFontWeight} onChange={(value) => updateMenuButtonControl('linksFontWeight', value)} />
+              </ControlGroup>
+              <ControlGroup label="Letter Spacing">
+                <TextControl value={menuButtonControls.linksLetterSpacing} onChange={(value) => updateMenuButtonControl('linksLetterSpacing', value)} />
+              </ControlGroup>
+              <ControlGroup label="Line Height">
+                <NumberControl max={3} min={0.7} step={0.05} value={menuButtonControls.linksLineHeight} onChange={(value) => updateMenuButtonControl('linksLineHeight', value)} />
+              </ControlGroup>
+              <ControlGroup label="Transform">
+                <SelectControl
+                  options={['uppercase', 'none', 'lowercase', 'capitalize']}
+                  value={menuButtonControls.linksTextTransform}
+                  onChange={(value) => updateMenuButtonControl('linksTextTransform', value as TextTransformControl)}
+                />
+              </ControlGroup>
+              <ControlGroup label="Gap">
+                <NumberControl max={80} min={0} value={menuButtonControls.linksGap} onChange={(value) => updateMenuButtonControl('linksGap', value)} />
+              </ControlGroup>
+            </ControlSection>
+
+            <ControlSection title="Open Menu">
+              <ControlGroup label="Background">
+                <TextControl value={menuButtonControls.menuBackground} onChange={(value) => updateMenuButtonControl('menuBackground', value)} />
+              </ControlGroup>
+              <ControlGroup label="Menu Text">
+                <TextControl value={menuButtonControls.menuTextColor} onChange={(value) => updateMenuButtonControl('menuTextColor', value)} />
+              </ControlGroup>
+              <ControlGroup label="Menu Hover">
+                <TextControl value={menuButtonControls.menuHoverColor} onChange={(value) => updateMenuButtonControl('menuHoverColor', value)} />
+              </ControlGroup>
+              <ControlGroup label="Header Height">
+                <NumberControl max={320} min={64} value={menuButtonControls.openMenuHeaderHeight} onChange={(value) => updateMenuButtonControl('openMenuHeaderHeight', value)} />
+              </ControlGroup>
+              <ControlGroup label="Header Top Pad">
+                <NumberControl max={120} min={0} value={menuButtonControls.openMenuHeaderTopPadding} onChange={(value) => updateMenuButtonControl('openMenuHeaderTopPadding', value)} />
+              </ControlGroup>
+            </ControlSection>
+          </div>
+        </details>
+      ) : null}
+
       <aside className="preview-sidebar" aria-label="Component library">
         <div>
           <p className="eyebrow">Webflow Studio</p>
@@ -439,6 +803,7 @@ function PreviewApp() {
             getInTouchSize,
             getInTouchTone,
             navbarControls,
+            menuButtonControls,
             marqueeDirection,
             marqueeFontSize,
             marqueeFontWeight,
@@ -517,6 +882,10 @@ function PreviewApp() {
           {activeComponent === 'navbar' ? (
             <div className="quiet-note">Use Full width for the closest page-level navbar test.</div>
           ) : null}
+
+          {activeComponent === 'menuButton' ? (
+            <div className="quiet-note">Use Full width to test the fixed navbar simulation and scroll-triggered links-to-menu animation.</div>
+          ) : null}
         </section>
       </section>
     </main>
@@ -532,6 +901,7 @@ function renderPreview(
     getInTouchSize: GetInTouchButtonSize
     getInTouchTone: GetInTouchButtonTone
     navbarControls: NavbarPreviewControls
+    menuButtonControls: MenuButtonPreviewControls
     marqueeDirection: MarqueeTitleDirection
     marqueeFontSize: number
     marqueeFontWeight: number
@@ -612,18 +982,72 @@ function renderPreview(
   }
 
   if (activeComponent === 'menuButton') {
+    const menuButtonControls = options.menuButtonControls
+    const menuLogo = getPreviewImage(menuButtonControls.menuLogoUrl, menuButtonControls.logoText)
+    const component = (
+      <ACGMenuButton
+        closeLabel={menuButtonControls.closeLabel}
+        contactColor={menuButtonControls.contactColor}
+        contactHoverColor={menuButtonControls.contactHoverColor}
+        contactLabel={menuButtonControls.contactLabel}
+        contactLink={getPreviewLink(menuButtonControls.contactHref)}
+        firstLabel={menuButtonControls.firstLabel}
+        firstLink={getPreviewLink(menuButtonControls.firstHref)}
+        fourthLabel={menuButtonControls.fourthLabel}
+        fourthLink={getPreviewLink(menuButtonControls.fourthHref)}
+        hideOpenMenuLogo={menuButtonControls.hideOpenMenuLogo}
+        linksAlignItems={menuButtonControls.linksAlignItems}
+        linksAlignSelf={menuButtonControls.linksAlignSelf}
+        linksColor={menuButtonControls.linksColor}
+        linksFontFamily={menuButtonControls.linksFontFamily}
+        linksFontSize={menuButtonControls.linksFontSize}
+        linksFontWeight={menuButtonControls.linksFontWeight}
+        linksGap={menuButtonControls.linksGap}
+        linksHoverColor={menuButtonControls.linksHoverColor}
+        linksJustifyItems={menuButtonControls.linksJustifyItems}
+        linksJustifySelf={menuButtonControls.linksJustifySelf}
+        linksLetterSpacing={menuButtonControls.linksLetterSpacing}
+        linksLineHeight={menuButtonControls.linksLineHeight}
+        linksTextTransform={menuButtonControls.linksTextTransform}
+        logoText={menuButtonControls.logoText}
+        menuBackground={menuButtonControls.menuBackground}
+        menuButtonAlignSelf={menuButtonControls.menuButtonAlignSelf}
+        menuButtonFontFamily={menuButtonControls.menuButtonFontFamily}
+        menuButtonFontSize={menuButtonControls.menuButtonFontSize}
+        menuButtonFontWeight={menuButtonControls.menuButtonFontWeight}
+        menuButtonHoverColor={menuButtonControls.menuButtonHoverColor}
+        menuButtonJustifySelf={menuButtonControls.menuButtonJustifySelf}
+        menuButtonLetterSpacing={menuButtonControls.menuButtonLetterSpacing}
+        menuButtonLineHeight={menuButtonControls.menuButtonLineHeight}
+        menuButtonTextTransform={menuButtonControls.menuButtonTextTransform}
+        menuHoverColor={menuButtonControls.menuHoverColor}
+        menuLabel={menuButtonControls.menuLabel}
+        menuLogoHeight={menuButtonControls.menuLogoHeight}
+        menuTextColor={menuButtonControls.menuTextColor}
+        openMenuHeaderHeight={menuButtonControls.openMenuHeaderHeight}
+        openMenuHeaderTopPadding={menuButtonControls.openMenuHeaderTopPadding}
+        scrollTrigger={menuButtonControls.scrollTrigger}
+        secondLabel={menuButtonControls.secondLabel}
+        secondLink={getPreviewLink(menuButtonControls.secondHref)}
+        textColor={menuButtonControls.textColor}
+        thirdLabel={menuButtonControls.thirdLabel}
+        thirdLink={getPreviewLink(menuButtonControls.thirdHref)}
+        triggerAlignContent={menuButtonControls.triggerAlignContent}
+        triggerAlignItems={menuButtonControls.triggerAlignItems}
+        triggerJustifyContent={menuButtonControls.triggerJustifyContent}
+        triggerJustifyItems={menuButtonControls.triggerJustifyItems}
+        variant={menuButtonControls.variant}
+        {...(menuLogo ? { menuLogo } : {})}
+      />
+    )
+
+    if (options.canvasMode === 'Full width') {
+      return <MenuButtonLongPage>{component}</MenuButtonLongPage>
+    }
+
     return (
       <div className="button-preview">
-        <ACGMenuButton
-          firstLabel="WHAT WE DO"
-          firstLink={{ href: '#strategy' }}
-          fourthLabel="ABOUT"
-          fourthLink={{ href: '#studio' }}
-          secondLabel="HOW WE WORK"
-          secondLink={{ href: '#systems' }}
-          thirdLabel="WORK"
-          thirdLink={{ href: '#work' }}
-        />
+        {component}
       </div>
     )
   }
@@ -777,6 +1201,25 @@ function NavbarSections() {
   )
 }
 
+function MenuButtonLongPage({ children }: { children: ReactNode }) {
+  return (
+    <div className="menu-button-page-preview">
+      <header className="menu-button-fixed-nav">
+        <div className="menu-button-nav-slot">{children}</div>
+        <div className="menu-button-preview-logo">ACG</div>
+        <GetInTouchButton label="GET IN TOUCH" link={{ href: '#contact' }} tone="Auto" />
+      </header>
+
+      <section className="menu-button-hero-section" id="top">
+        <span>Scroll preview</span>
+        <h3>Menu links collapse into the menu trigger.</h3>
+      </section>
+
+      <NavbarSections />
+    </div>
+  )
+}
+
 function ControlGroup({ children, label }: { children: ReactNode; label: string }) {
   return (
     <label className="control-group">
@@ -792,6 +1235,37 @@ function ControlSection({ children, title }: { children: ReactNode; title: strin
       <h3>{title}</h3>
       <div className="control-section-grid">{children}</div>
     </section>
+  )
+}
+
+function MenuButtonLinkControls({
+  hrefKey,
+  labelKey,
+  labelNumber,
+  menuButtonControls,
+  updateMenuButtonControl,
+}: {
+  hrefKey: MenuButtonStringControlKey
+  labelKey: MenuButtonStringControlKey
+  labelNumber: string
+  menuButtonControls: MenuButtonPreviewControls
+  updateMenuButtonControl: UpdateMenuButtonControl
+}) {
+  return (
+    <div className="link-control-pair">
+      <ControlGroup label={`${labelNumber} Label`}>
+        <TextControl
+          value={String(menuButtonControls[labelKey])}
+          onChange={(value) => updateMenuButtonControl(labelKey, value)}
+        />
+      </ControlGroup>
+      <ControlGroup label={`${labelNumber} Link`}>
+        <TextControl
+          value={String(menuButtonControls[hrefKey])}
+          onChange={(value) => updateMenuButtonControl(hrefKey, value)}
+        />
+      </ControlGroup>
+    </div>
   )
 }
 
